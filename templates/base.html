@@ -1,0 +1,99 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+    <!-- Option 2: jQuery, Popper.js, and Bootstrap JS
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+    -->
+    <title>Piblitz</title>
+  </head>
+  <body>
+    {% block 'body' %}
+    {% endblock %}
+
+    <footer id="footer" style="background: var(--white-2);max-width: 1400px;margin: 0 auto;">
+        <div class="container-fluid">
+            <br>
+            <br>
+
+            <br>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="ml-lg-5 ml-3">
+                        <img class="mb-3 mt-3" style="max-width:300px;" src="/static/piblitz-logo.svg" alt="Piblitz">
+                        <h3 style="font: var(--heading-five);color: #01225A;line-height: var(--spacing-3)">
+                            World's first collaborative Knowledge Development + Documentation platform.
+                        </h3>
+                        <br>
+                        <br>
+
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-3 ml-lg-0 ml-3">
+                    <br>
+                    <h3 style="font: var(--heading-four);line-height: var(--spacing-4);">
+                        Help us build Piblitz. Give your Suggestions and Feedback.
+                    </h3>
+                    <button class="schedule" type="submit" style="height:fit-content;outline:0;" onclick="window.open('https://calendly.com/piblitz')">
+                        <i class="fa fa-phone fa-lg" aria-hidden="true"></i>&nbsp;Schedule a call
+                        </button>
+                    <ul style="padding: 0;list-style-type: none;" class="mt-2">
+                        <li><i class="fa fa-users m-1"></i>
+                            <a aria-label="Twitter" href="https://piblitz.com/changemaker/" target="__blank" rel="noreferrer noopener">Apply for Campus Ambassador Program</a></li>
+                    </ul>
+
+                </div>
+                <div class="col-lg-4 ml-lg-0 ml-3">
+                    <div class="row">
+                        <div class="col-6">
+                            <div>
+                                <br>
+                                <h4>SOCIAL</h4>
+                                <ul style="padding: 0;list-style-type: none;">
+                                    <li><i class="fa fa-twitter m-1"></i>
+                                        <a aria-label="Twitter" href="https://twitter.com/piblitz" target="__blank" rel="noreferrer noopener">Twitter</a></li>
+                                    <li><i class="fa fa-instagram m-1"></i>
+                                        <a aria-label="Instagram" href="https://www.instagram.com/piblitz_official/" target="__blank" rel="noreferrer noopener">Instagram</a></li>
+                                    <li><i class="fa fa-facebook m-1"></i>
+                                        <a aria-label="Facebook" href="https://www.facebook.com/pg/Piblitz-106418777565639/services/?ref=page_internal" target="__blank" rel="noreferrer noopener">Facebook</a></li>
+                                    <li><i class="fa fa-linkedin m-1"></i>
+                                        <a aria-label="linkedin" href="https://www.linkedin.com/company/piblitz-technologies/" target="__blank" rel="noreferrer noopener">LinkedIn</a></li>
+                                    <li><i class="fa fa-comment m-1"></i>
+                                        <a aria-label="Piblitz Contact Mail" href="mailto:contact@piblitz.com?Subject=Hello%20Piblitz">Contact</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div>
+                                <br>
+                                <h4>COMPANY</h4>
+                                <ul style="padding: 0;list-style-type: none;">
+                                    <li><a aria-label="Piblitz Careers Mail" href="mailto:hr@piblitz.com?Subject=Hello%20Piblitz">Careers</a></li>
+                                    <li><a href="/privacy">Privacy</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </footer>
+  </body>
+</html>
