@@ -39,8 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'widget_tweaks',
     'support',
+    'phonenumber_field',
     
 ]
+PHONENUMBER_DB_FORMAT = 'INTERNATIONAL'
+PHONENUMBER_DEFAULT_REGION='IN'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
