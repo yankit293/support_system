@@ -9,6 +9,8 @@ __pycache__/
 # Distribution / packaging
 .Python
 Piblitz-env/
+support/__pycache__/
+Piblitz/__pycache__/
 env/
 build/
 develop-eggs/
