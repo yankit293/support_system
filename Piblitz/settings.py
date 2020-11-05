@@ -40,10 +40,13 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'support',
     'phonenumber_field',
+    'crispy_forms',
     
 ]
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 PHONENUMBER_DB_FORMAT = 'INTERNATIONAL'
-PHONENUMBER_DEFAULT_REGION='IN'
+PHONENUMBER_DEFAULT_REGION = 'IN'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

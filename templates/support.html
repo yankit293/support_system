@@ -8,31 +8,24 @@
       <h2>Support</h2>
       <ul class="nav nav-pills flex-column">
         <li class="nav-item">
-          <a class="nav-link active" href="#">Payment Issues</a>
+            <a class="nav-link active" href="{% url 'index' %}">Get help Piblitz</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Report</a>
+          <a class="nav-link" href="{% url 'payment' %}">Payment Issues</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Copy Right</a>
+          <a class="nav-link" href="{% url 'report' %}">Report</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="">Copy Right</a>
         </li>
       </ul>
       <hr class="d-sm-none">
     </div>
     <div class="col-sm-8">
-      <h2>{{ note }}</h2>
-      <form enctype="multipart/form-data" action="{% url 'index' %} " method = "POST" id= "form1">
-        {% csrf_token %}
-        
-        {% for field in requestform %}
-        <div class="form-group">
-        {{ field.errors }}
-        {{ field.label_tag }}
-        {% render_field field class="form-control" %}
-        </div>
-        {% endfor %}
-        <button type="submit" form = "form1" class="btn btn-primary">Submit</button>
-      </form>
+     <p> 
+      Piblitz Support is committed to providing you with best-in-class service through its experienced technical support team. They are equipped to assist you through email, ensuring to offer effective solutions to your queries with utmost promptness and efficiency.
+     </p>
     </div>
   </div>
 </div>
