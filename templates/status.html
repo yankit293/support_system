@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block 'body' %}
+<div class= "container" style="margin-top:30px">
+    <div class="row">
+      <div class="col-sm-4">
+        <h2>Support</h2>
+        <ul class="nav nav-pills flex-column">
+          <li class="nav-item">
+            <a class="nav-link " href="{% url 'index' %}">Get help Piblitz</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " href="{% url 'payment' %}">Payment Issues</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'report' %}">Report</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="{% url 'status' %}">Status</a>
+          </li>
+        </ul>
+        <hr class="d-sm-none">
+      </div>
+      <div class="col-sm-8">
+        <h3>{{ note }}</h3>
+        
+        {% for data in statusdata %}
+        <table  class="table table-bordered">
+          <tbody>
+          <tr>
+            <th scope="row">Name</th>
+            <td>
+              {{ data.name }}
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Email</th>
+            <td>
+              {{ data.email }}
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Mobile No</th>
+            <td>
+              {{ data.phone_number }}
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Description</th>
+            <td>
+              {{ data.description }}
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Issue</th>
+            <td>
+              {{ data.issue }}
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Status</th>
+            <td>
+              {{ data.status }}
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

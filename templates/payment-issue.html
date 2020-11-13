@@ -16,7 +16,7 @@
           <a class="nav-link" href="{% url 'report' %}">Report</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="">Copy Right</a>
+          <a class="nav-link" href="{% url 'status' %}">Status</a>
         </li>
       </ul>
       <hr class="d-sm-none">
@@ -26,26 +26,24 @@
         <h3 class="Subhead-heading ">
           Payment Issue
     </h3></div>
-      <form enctype="multipart/form-data" action="{% url 'payment' %} " method = "POST" id= "form1">
+      <form enctype="multipart/form-data" action="" method = "POST" id= "form1" class = "form-bodered">
         {% csrf_token %}
-        <div class="form-row">
-          <div class="form-group col-md-6 mb-0">
-            {{ requestform.name|as_crispy_field }}
+        {% if requestform.non_field_errors %}
+        <div class="alert alert-danger" role="alert">
+          {% for err in requestform.non_field_errors %}
+            {% if err == 'unique' %}
+            <input type ="hidden" name="unique" value="status" >
+            {% endif %}
+            <p class="form-error">{{ err }}</p>  
+          {% endfor %}
           </div>
-          <div class="form-group col-md-6 mb-0">
-            {{ requestform.email|as_crispy_field }}
-          </div>
+        {% endif %}
+        {% for field in requestform %}
+        <div class="form-group">
+        {{ field.errors|as_crispy_errors }}
+        {{ field|as_crispy_field }}
         </div>
-        {{ requestform.phone_number|as_crispy_field }}
-        {{ requestform.description|as_crispy_field }}
-        <div class="form-row">
-          <div class="form-group col-md-6 mb-0">
-            {{ requestform.issue|as_crispy_field }}
-          </div>
-          <div class="form-group col-md-4 mb-0">
-            {{ requestform.image|as_crispy_field }}
-          </div>
-        </div>
+        {% endfor %}
         <button type="submit" form = "form1" class="btn btn-primary">Submit</button>
       </form>
     </div>

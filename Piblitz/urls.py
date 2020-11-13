@@ -20,6 +20,7 @@ from support import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
-    path('payment', views.payment, name='payment'),
-    path('report', views.report, name='report')
+    path('support/payment', views.payment, name='payment'),
+    path('support/report', views.report, name='report'),
+    path('support/status', views.status, name='status')
 ]
