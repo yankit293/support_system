@@ -31,19 +31,23 @@
         {% if requestform.non_field_errors %}
         <div class="alert alert-danger" role="alert">
           {% for err in requestform.non_field_errors %}
-            {% if err == 'unique' %}
-            <input type ="hidden" name="unique" value="status" >
-            {% endif %}
             <p class="form-error">{{ err }}</p>  
           {% endfor %}
           </div>
         {% endif %}
         {% for field in requestform %}
-        <div class="form-group">
+        <div class=" form-group col-sm-6">
         {{ field.errors|as_crispy_errors }}
         {{ field|as_crispy_field }}
         </div>
         {% endfor %}
+        {{ requestform.media.css}}
+        {{ requestform.media.js}}
+        <style>
+          .intl-tel-input {
+            display :block;
+          }
+        </style>
         <button type="submit" form = "form1" class="btn btn-primary">Submit</button>
       </form>
     </div>

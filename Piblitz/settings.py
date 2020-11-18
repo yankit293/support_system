@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'support',
     'phonenumber_field',
     'crispy_forms',
+    'intl_tel_input',
     
 ]
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
