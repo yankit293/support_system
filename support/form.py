@@ -4,6 +4,18 @@ from phonenumber_field.modelfields import PhoneNumberField
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 from phonenumber_field.widgets import PhoneNumberInternationalFallbackWidget,PhoneNumberPrefixWidget,PhonePrefixSelect,TextInput
 from intl_tel_input.widgets import IntlTelInputWidget
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
+
+
+class CreateUserForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ['first_name','last_name','username','email','password1','password2']
+
+
+
 
 class RequestForm(forms.ModelForm):
     

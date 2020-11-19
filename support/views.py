@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponseRedirect, reverse, redirect
 from django.http import HttpResponse
-from .form import RequestForm, ReportForm, StatusForm
+from .form import RequestForm, ReportForm, StatusForm, CreateUserForm
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
@@ -11,6 +11,17 @@ from django.contrib import messages
 
 def index(request):
     return render(request, 'support.html')
+
+def registerationPage(request):
+    if request.method == 'POST':
+        registerform = CreateUserForm(request.POST)
+        if registerform.is_valid():
+            registerform.save()
+            registerform = CreateUserForm()
+        return render(request, 'registeration.html',{ 'form':registerform })
+    else:
+        registerform = CreateUserForm()
+        return render(request, 'registeration.html',{ 'form':registerform })
 
 def payment(request):
     if request.method == 'POST':

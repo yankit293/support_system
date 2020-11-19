@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block 'body' %}
+{% load crispy_forms_tags %}
+<div class= "container" style="margin-top:30px">
+    <div class="row">
+      <div class="col-sm-4">
+        <h3>Registeration</h3>
+    </div>
+    <div class="col-sm-8">
+    <form method = "POST"  action="" class = "form-bodered">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class=" form-group">
+            {{ field.errors|as_crispy_errors }}
+            {{ field|as_crispy_field }}
+            </div>
+            {% endfor %}
+            <button type="submit"  class="btn btn-primary">Submit</button>
+        </form>
+        </div>
+
+{% endblock %}
