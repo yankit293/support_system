@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponseRedirect, reverse, redirect
 from django.http import HttpResponse
-from .form import RequestForm, ReportForm, StatusForm, CreateUserForm
+from .form import RequestForm, CreateUserForm
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
@@ -52,17 +52,6 @@ def payment(request):
     else:
         form = RequestForm()
         return render(request, 'payment-issue.html', {'requestform': form})
-
-def report(request):
-    if request.method == 'POST':
-        filled_form = ReportForm(request.POST, request.FILES)
-        if filled_form.is_valid():
-            filled_form.save()
-            filled_form = ReportForm()
-        return render(request, 'report-user.html', {'reportform': filled_form})
-    else:
-        form = ReportForm()
-        return render(request, 'report-user.html', {'reportform': form})
 
 def status(request):
     status_all_data = RaiseRequest.objects.all()

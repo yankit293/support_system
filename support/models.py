@@ -12,8 +12,8 @@ class Status(models.Model):
     title = models.CharField(max_length=30)
     def __str__(self):
         return self.title
-name_regex = RegexValidator(regex=r'^[a-zA-Z ]+$', message="Only enter alphabet!")
 
+name_regex = RegexValidator(regex=r'^[a-zA-Z ]+$', message="Only enter alphabet!")
 #model of RaiseRequest.
 class RaiseRequest(models.Model):
     name = models.CharField(max_length=30, validators=[name_regex])
@@ -30,11 +30,16 @@ class RaiseRequest(models.Model):
     def __str__(self):
         return self.email
 
-class ReportUser(models.Model):
+class Reason(models.Model):
+    title = models.CharField(max_length=30)
+    def __str__(self):
+        return self.title
+
+class Report(models.Model):
     name = models.CharField(max_length=30, validators=[name_regex])
     email = models.EmailField(max_length=100)
     subject = models.CharField(max_length=50)
-    description = models.CharField(max_length=400,help_text='Describ your issue here.')
+    reason = models.ForeignKey(Reason, on_delete=models.CASCADE)
+    description = models.CharField(max_length=400)
+    url = models.URLField(max_length=200)
     image = models.ImageField(validators=[file_size], help_text='Size should not exceed 5 MiB.')
-
-    
