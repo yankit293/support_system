@@ -36,7 +36,7 @@
           </div>
         {% endif %}
         {% for field in requestform %}
-        <div class=" form-group col-sm-6">
+        <div class=" form-group">
         {{ field.errors|as_crispy_errors }}
         {{ field|as_crispy_field }}
         </div>
