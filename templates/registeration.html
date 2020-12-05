@@ -7,7 +7,7 @@
         <h3>Registeration</h3>
     </div>
     <div class="col-sm-8">
-    <form method = "POST"  action="" class = "form-bodered">
+    <form  autocomplete="off" method = "POST"  action="" class = "form-bodered">
         {% csrf_token %}
         {% for field in form %}
             <div class=" form-group">

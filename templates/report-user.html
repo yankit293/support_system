@@ -8,16 +8,25 @@
       <h2>Support</h2>
       <ul class="nav nav-pills flex-column">
         <li class="nav-item">
-          <a class="nav-link " href="{% url 'index' %}">Get help Piblitz</a>
+            <a class="nav-link" href="{% url 'index' %}">Get help Piblitz</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="{% url 'payment' %}">Payment Issues</a>
+          <a class="nav-link" href="{% url 'payment' %}">Payment Issues</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="{% url 'report' %}">Report</a>
+          <a class="nav-link active" href="{% url 'reportuser' %}">Report User</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'status' %}">Status</a>
+          <a class="nav-link" href="{% url 'reportcontent' %}">Report Content</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'paymentissueallstatus' %}">Payment Status</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'reportuserallstatus' %}">Report User status</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'reportcontentallstatus' %}">Report Content Status</a>
         </li>
       </ul>
       <hr class="d-sm-none">
@@ -28,19 +37,105 @@
           Report
     </h3></div>
       <h2>{{ note }}</h2>
-      <form enctype="multipart/form-data" action="{% url 'report' %} " method = "POST" id= "form2">
+      <form  enctype="multipart/form-data" action="" autocomplete="off" method = "POST" id= "form2">
         {% csrf_token %}
-        
-        {% for field in reportform %}
+        {% for field in reportuserform %}
         <div class="form-group">
         {{ field.errors }}
         {{ field|as_crispy_field }}
         </div>
         {% endfor %}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"> </script>
+        <!-- jQuery UI !-->
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script>
+        let username_input = document.getElementById('id_username');
+        username_input.onkeyup = function(){
+          let x = $(this).val();
+          console.log(x);
+          $.ajax({
+            type: "GET",
+            url: "/report/get_usernames/",
+            data: {username: x},
+            datatype:JSON,
+            success: function (data) {
+              console.log(data)
+
+            }
+          });      
+        }
+        </script>
         <button type="submit" form = "form2" class="btn btn-primary">Submit</button>
       </form>
+      <div class= "form-group" >
+        {{reportuserform.username.label }}
+        {{ reportuserform.username }}
+
+      </div>
+
+      <div class="scrollable" >
+        <ul class = "list-group" >
+          <li class="list-group-item" >
+            <span>Ankit Yadav</span> 
+            <span>yankit293@gmail.com</span> <br>
+            <span>@yankit293</span>
+          </li>
+          <li class="list-group-item" >
+            <span>Ankit Yadav</span> 
+            <span>yankit293@gmail.com</span> <br>
+            <span>@yankit293</span>
+          </li>
+          <li class="list-group-item" >
+            <span>Ankit Yadav</span> 
+            <span>yankit293@gmail.com</span> <br>
+            <span>@yankit293</span>
+          </li>
+          <li class="list-group-item" >
+            <span>Ankit Yadav</span> 
+            <span>yankit293@gmail.com</span> <br>
+            <span>@yankit293</span>
+          </li>
+          <li class="list-group-item" >
+            <span>Ankit Yadav</span> 
+            <span>yankit293@gmail.com</span> <br>
+            <span>@yankit293</span>
+          </li>
+          <li class="list-group-item" >
+            <span>Ankit Yadav</span> 
+            <span>yankit293@gmail.com</span> <br>
+            <span>@yankit293</span>
+          </li>
+          <li class="list-group-item" >
+            <span>Ankit Yadav</span> 
+            <span>yankit293@gmail.com</span> <br>
+            <span>@yankit293</span>
+          </li>
+        </ul>
+      </div>
+      <style>
+        .list-group{
+          max-height: 300px;
+          margin-bottom: 10px;
+          overflow-y:auto;
+          
+        }
+        .list-list-group-item{
+          height: 50px;
+        }
+        li{
+        cursor: pointer;
+        }
+        </style>
+        <script>
+          $('ul').on('mouseover', 'li', function () {
+              $('li.active').removeClass('active');
+              $(this).addClass('active');
+            });
+        </script>
+      </div>
     </div>
   </div>
 </div>
 </div>
+
 {% endblock %}

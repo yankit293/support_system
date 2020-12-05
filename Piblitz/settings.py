@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'widget_tweaks',
     'support',
+    'user',
     'phonenumber_field',
     'crispy_forms',
     'intl_tel_input',
@@ -153,3 +154,5 @@ ADMINS = [
 ]
 
 MANAGERS = ADMINS
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'

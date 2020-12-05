@@ -18,10 +18,10 @@
             <a class="nav-link" href="{% url 'reportcontent' %}">Report Content</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="{% url 'paymentissueallstatus' %}">Payment Status</a>
+            <a class="nav-link" href="{% url 'paymentissueallstatus' %}">Payment Status</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'reportuserallstatus' %}">Report User status</a>
+            <a class="nav-link active" href="{% url 'reportuserallstatus' %}">Report User status</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'reportcontentallstatus' %}">Report Content Status</a>
@@ -38,19 +38,22 @@
           {% endfor %}
         </div>
         {% endif %}
-        {% if status %}
-        <h4>Details of all request made by {{ user.username }} at Piblitz</h4>
+        {% if reportuserdata %}
+        <h4>Details of all Report made by {{ user.username }} at Piblitz</h4>
         <table class="table table-striped table-bordered">
           <thead class="thead-light">
             <th>Email</th>
-            <th>Issues</th>
+            <th>Reason</th>
+            <th>Username</th>
             <th>Status</th>
           </thead> 
-        {% for data in status %}
-        <tr class='clickable-row' data-href="{% url 'paymentissuestatus' id=data.id %}">
+        {% for data in reportuserdata %}
+        <tr class='clickable-row' data-href="{% url 'reportuserstatus' id=data.id %}">
           <td>{{ data.email }}</td>
-          <td>{{ data.issue }}</td>
+          <td>{{ data.reason }}</td>
+          <td>{{ data.username}}</td>
           <td><span  class="badge badge-pill badge-info">{{ data.status}}</span></td>
+          
         </tr>
         {% endfor %}
         </table>
@@ -71,44 +74,48 @@
                   });
                 });
         </script>
-        {% if statusdata %}
-        <h4>User's Request details.</h4>
+        {% if reportuserstatus %}
+        <h4>User's Report details.</h4>
         <table class="table table-striped table-bordered">
           <tbody>
             <tr>
-              <th scope="row">Email</th>
-              <td>{{ statusdata.email }}</td>
+              <th scope="row">Name</th>
+              <td>{{ reportuserstatus.name }}</td>
             </tr>
             <tr>
-              <th scope="row">Mobile No</th>
-              <td>{{ statusdata.phone_number }}</td>
+              <th scope="row">Email</th>
+              <td>{{ reportuserstatus.email }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Reason</th>
+              <td>{{ reportuserstatus.reason }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Username</th>
+              <td>{{ reportuserstatus.username}}</td>
             </tr>
             <tr>
               <th scope="row">Description</th>
-              <td>{{ statusdata.description }}</td>
-            </tr>
-            <tr>
-              <th scope="row">Issue</th>
-              <td>{{ statusdata.issue }}</td>
+              <td>{{ reportuserstatus.description }}</td>
             </tr>
             <tr>
               <th scope="row">Media</th>
-              <td><a target="_blank" href="{{ statusdata.image.url }}">
-                    <img src="{{ statusdata.image.url }}" alt="" class="img-thumbnail rounded float-left" style="padding: 5px; width: 150px"> 
+              <td><a target="_blank" href="{{ reportuserstatus.image.url }}">
+                    <img src="{{ reportuserstatus.image.url }}" alt="" class="img-thumbnail rounded float-left" style="padding: 5px; width: 150px"> 
                   </a>
               </td>
-            </tr>  
+            </tr>
             <tr>
               <th scope="row">Status</th>
-              <td><span class="badge badge-pill badge-info">{{ statusdata.status }}</span></td>
+              <td><span class="badge badge-pill badge-info">{{ reportuserstatus.status }}</span></td>
             </tr>
             <tr>
-              <th scope="row" >Remove</th>
-              <td><a class="btn btn-sm btn-danger" href="{% url 'deletepaymentissue' statusdata.id %}">Delete</a></td>
-            </tr>
+              <th scope="row">Remove</th>
+              <td><a class="btn btn-sm btn-danger" href="{% url 'delete_report_user' reportuserstatus.id %}">Delete</a></td>
+            </tr>  
           </tbody>
         </table>
-        {% endif %}    
+        {% endif %}   
         </div>
     </div>
 </div>
