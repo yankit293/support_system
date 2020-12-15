@@ -102,7 +102,7 @@ ENV/
 
 # mypy
 .mypy_cache/
-
+assets/*
 .DS_Store
 *.sqlite3
 media/

@@ -37,17 +37,39 @@
           Report
     </h3></div>
       <h2>{{ note }}</h2>
-      <form  enctype="multipart/form-data" action="" autocomplete="off" method = "POST" id= "form2">
+      <form  enctype="multipart/form-data"  class="needs-validation" autocomplete="off" method = "POST" id= "form2">
         {% csrf_token %}
         {% for field in reportuserform %}
-        <div class="form-group">
         {{ field.errors }}
         {{ field|as_crispy_field }}
-        </div>
         {% endfor %}
+        <script>
+          (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+              // Fetch all the forms we want to apply custom Bootstrap validation styles to
+              var forms = document.getElementsByClassName('needs-validation');
+              // Loop over them and prevent submission
+              var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                  var user = '{{ user.username }}';
+                  var username = document.getElementById('id_username').value;
+                  if (user === username) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    alert("you can't report yourself. Give username of the person you want to report.")
+                    var username = document.getElementById('id_username');
+                    username.value = ""
+                  }
+                }, false);
+              });
+            }, false);
+          })();
+          </script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"> </script>
         <!-- jQuery UI !-->
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        
         <script>
         let username_input = document.getElementById('id_username');
         username_input.onkeyup = function(){
@@ -55,64 +77,83 @@
           console.log(x);
           $.ajax({
             type: "GET",
-            url: "/report/get_usernames/",
+            url: "/support/get_usernames/",
             data: {username: x},
             datatype:JSON,
             success: function (data) {
-              console.log(data)
+              var listbox = document.getElementById('div_id_username');
+              var list = document.getElementById('listbox');
+              if(typeof(list) != 'undefined' && list != null){
+                      listbox.removeChild(listbox.childNodes[5]);
+                  } else{
+                      console.log('Element does not exist!');
+                  }
+              let div = document.createElement('div');
+              div.id = "listbox";
+              div.className = "scrollable";
+              let ul = document.createElement('ul');
+              ul.className = "list-group";
+              div.appendChild(ul);
+              for (var i in data){
+                let li = document.createElement('li');
+                li.className = "list-group-item";
+                li.addEventListener("click", function(e) {
+                  var inp = document.getElementById("id_username");
+                  inp.value = this.getElementsByTagName("input")[0].value;
+                  inp.readOnly = true;
+                  listbox.removeChild(listbox.childNodes[5]);
+                  var span = listbox.childNodes[3];
+                  var button = document.createElement('span');
+                  button.id = "searchclear";
+                  button.className = "close";
+                  button.innerText = "X";
+                  button.hidden = false;
+                  button.addEventListener('click', function(){
+                    inp.value = '';
+                    inp.readOnly = false;
+                    button.hidden = true;
 
-            }
-          });      
+                  });
+                  span.appendChild(button);
+                });
+                if (data[i].name != null){
+                  li.innerHTML= "<strong>" + data[i].name + "</strong>" + "</br>";
+                }
+                li.innerHTML += "<span>" + data[i].username + "</span>" + "</br>";
+                li.innerHTML += `<input type="hidden" value="${data[i].username}" >`;
+                ul.appendChild(li);
+              }
+              document.getElementById('div_id_username').appendChild(div);
+              }
+           });
         }
         </script>
         <button type="submit" form = "form2" class="btn btn-primary">Submit</button>
       </form>
-      <div class= "form-group" >
-        {{reportuserform.username.label }}
-        {{ reportuserform.username }}
-
-      </div>
-
-      <div class="scrollable" >
-        <ul class = "list-group" >
-          <li class="list-group-item" >
-            <span>Ankit Yadav</span> 
-            <span>yankit293@gmail.com</span> <br>
-            <span>@yankit293</span>
-          </li>
-          <li class="list-group-item" >
-            <span>Ankit Yadav</span> 
-            <span>yankit293@gmail.com</span> <br>
-            <span>@yankit293</span>
-          </li>
-          <li class="list-group-item" >
-            <span>Ankit Yadav</span> 
-            <span>yankit293@gmail.com</span> <br>
-            <span>@yankit293</span>
-          </li>
-          <li class="list-group-item" >
-            <span>Ankit Yadav</span> 
-            <span>yankit293@gmail.com</span> <br>
-            <span>@yankit293</span>
-          </li>
-          <li class="list-group-item" >
-            <span>Ankit Yadav</span> 
-            <span>yankit293@gmail.com</span> <br>
-            <span>@yankit293</span>
-          </li>
-          <li class="list-group-item" >
-            <span>Ankit Yadav</span> 
-            <span>yankit293@gmail.com</span> <br>
-            <span>@yankit293</span>
-          </li>
-          <li class="list-group-item" >
-            <span>Ankit Yadav</span> 
-            <span>yankit293@gmail.com</span> <br>
-            <span>@yankit293</span>
-          </li>
-        </ul>
-      </div>
       <style>
+        #searchinput {
+            width: 200px;
+        }
+        #searchclear {
+            position: absolute;
+            right: 30px;
+            top: 40px;
+            bottom: 0;
+            height: 14px;
+            margin: auto;
+            font-size: 14px;
+            cursor: pointer;
+            color: #ccc;
+        }
+      </style>
+      <style>
+        div.scrollable {
+          position: absolute;
+          margin-top: 10px;
+          top: auto;
+          right: 3%;
+          left: 3%;
+        }
         .list-group{
           max-height: 300px;
           margin-bottom: 10px;
@@ -127,7 +168,7 @@
         }
         </style>
         <script>
-          $('ul').on('mouseover', 'li', function () {
+          $('#list-group ul').on('mouseover', '#list-group-item li', function () {
               $('li.active').removeClass('active');
               $(this).addClass('active');
             });

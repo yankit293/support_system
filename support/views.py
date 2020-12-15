@@ -17,6 +17,12 @@ from django.contrib.auth.decorators import login_required
 def index(request):
     return render(request, 'support.html')
 
+def blog(request):
+    return render(request, 'blog.html')
+
+def embed(request):
+    return render(request, 'embed.html')
+
 @login_required(login_url='/user/login')    
 def paymentissue(request):
     if request.method == 'POST':
@@ -35,7 +41,13 @@ def paymentissue(request):
             recipient.append(sender)
             send_mail(subject,plain_message,from_email=None, recipient_list=recipient,html_message=html_message,fail_silently=False,)'''
             note = 'Thanks for sending request!'
-            return render(request, 'status.html', {'note':note})
+            email = filled_form.cleaned_data['email']
+            issue = filled_form.cleaned_data['issue']
+            user = request.user
+            status_data_pt = RaiseRequest.objects.get(email = email, issue= issue, user=user)
+            id = status_data_pt.id
+            messages.success(request, "Your Request is submitted Successfully. Wait for Our Confirmation mail.")
+            return HttpResponseRedirect('status/'+ str(id))
         else:
             email = filled_form.cleaned_data['email']
             issue = filled_form.cleaned_data['issue']
@@ -67,11 +79,10 @@ def paymentissuestatus(request, id):
 
 @login_required(login_url='/user/login')
 def deletepaymentissue(request, pk=None):
-    obj = RaiseRequest.objects.get(id=pk)
     if request.method == "POST":
+        obj = RaiseRequest.objects.get(id=pk)
         obj.delete()
         return redirect('/support/paymentissue/status/')
-    return render(request, 'delete.html', {'paymentitem':obj})
 
 #Report User 
 @login_required(login_url='/user/login')
@@ -82,9 +93,14 @@ def reportuser(request):
             saving=filled_form.save(commit=False)
             saving.user = request.user
             saving.save()
-            filled_form = ReportUserForm()
-            note = 'Thanks for sending request!'
-            return render(request, 'reportuser-status.html', {'note':note})
+            email = filled_form.cleaned_data['email']
+            username = filled_form.cleaned_data['username']
+            reason = filled_form.cleaned_data['reason']
+            user = request.user 
+            report_status = ReportUser.objects.get(email = email, username = username, reason = reason, user=user)
+            id = report_status.id
+            messages.success(request, "Your Request is submitted Successfully. Wait for Our Confirmation mail.")
+            return HttpResponseRedirect('status/'+ str(id))
         else:
             email = filled_form.cleaned_data['email']
             username = filled_form.cleaned_data['username']
@@ -102,14 +118,18 @@ def reportuser(request):
 
 def get_usernames(request): 
     if request.is_ajax():
+        current_user = request.user
         q = request.GET.get('username')
-        usernames = User.objects.filter(username__startswith=q)
-        results = []
-        for un in usernames:
-            key = ['username','name', 'email']
-            value = [un.username, str(un.first_name + ' ' + un.last_name), un.email]
-            user = dict(zip(key, value))
-            results.append(user)  
+        if q:
+            usernames = User.objects.filter(username__startswith=q).exclude(username=current_user)
+            results = []
+            for un in usernames:
+                key = ['username','name', 'email']
+                value = [un.username, str(un.first_name + ' ' + un.last_name), un.email]
+                user = dict(zip(key, value))
+                results.append(user)
+        else:
+            results = None
         return JsonResponse(results, safe=False)
     return render(request, 'report-user.html')
 
@@ -119,7 +139,7 @@ def reportalluserstatus(request):
     reportuser_alldata = ReportUser.objects.filter(user=user)
     return render(request, 'reportuser-status.html', {'reportuserdata':reportuser_alldata})
 
-
+@login_required(login_url='/user/login')
 def reportuserstatus(request, id):
     link = id
     user = request.user
@@ -128,11 +148,10 @@ def reportuserstatus(request, id):
 
 
 def delete_report_user(request, pk):
-    obj = ReportUser.objects.get(id=pk)
     if request.method == "POST":
+        obj = ReportUser.objects.get(id=pk)
         obj.delete()
         return redirect('/support/reportuser/status/')
-    return render(request, 'delete.html', {'useritem':obj})
 
 #Report Content
 @login_required(login_url='/user/login')
@@ -160,6 +179,7 @@ def reportcontent(request):
     else:
         form = ReportContentForm()
         return render(request, 'report-content.html', {'reportcontentform': form})
+
 @login_required(login_url='/user/login')
 def reportallcontentstatus(request):
     user = request.user
@@ -174,8 +194,7 @@ def reportcontentstatus(request, id):
 
 
 def delete_report_content(request, pk):
-	obj = ReportContent.objects.get(id=pk)
-	if request.method == "POST":
-		obj.delete()
-		return redirect('/support/reportcontent/status/')
-	return render(request, 'delete.html', {'contentitem':obj})
+    if request.method == "POST":
+        obj = ReportContent.objects.get(id=pk)
+        obj.delete()
+        return redirect('/support/reportcontent/status/')

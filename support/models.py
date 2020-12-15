@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 from django.core.validators import RegexValidator, MinLengthValidator
 from phonenumber_field.modelfields import PhoneNumberField
 from .validator import file_size
@@ -47,6 +48,7 @@ class ReportUser(models.Model):
     class Meta:
         db_table = "report_user"
         unique_together = ['email','username','reason']
+
 
 class ReportContent(models.Model):
     name = models.CharField(max_length=30, validators=[name_regex])
