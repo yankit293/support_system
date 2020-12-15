@@ -20,9 +20,6 @@ def index(request):
 def blog(request):
     return render(request, 'blog.html')
 
-def embed(request):
-    return render(request, 'embed.html')
-
 @login_required(login_url='/user/login')    
 def paymentissue(request):
     if request.method == 'POST':
