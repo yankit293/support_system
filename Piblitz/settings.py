@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'support',
     'user',
+    'embed',
     'phonenumber_field',
     'crispy_forms',
     'intl_tel_input',
