@@ -1,21 +1,25 @@
 1. Flicker (api)
-2. Imgur (need perfection)
+2. Imgur (Done)
 3. Instagram (api)
-4. img.ly ()
-5. facebook ()
-6. Zoomable ()
+4. 500px (api)
+5. pintrest (Done)
+6. Giphy  (Done)
 7. pexels (Done)
-8. Vidme (app)
-9. Giphy  (need perfection)
-10. Frontback ()
-12. Pollstar ()
-13. Momento360 ()
-14. Kuula ()
-15. Mobypictur ()
-16. we love it  ()
-17. pintrest (Done)
+8. Pollstar (Done)
+9. Kuula (Done)
+10. we heart it  (Done) 
 
-Done.
+11. hackster.io (Done)
+12. gfycat (Done)
+13. reddit (Done)
+14. github gist (Done) 
+15. tumblr (not working )
+16. Dribble (self imlementation needed or use api)
 
-<blockquote class="imgur-embed-pub" lang="en" data-id="a/uoU6pSA"  ><a href="//imgur.com/a/uoU6pSA">Mcrib</a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
-<iframe src="https://assets.pinterest.com/ext/embed.html?id=850124867151209227" height="450" width="236" frameborder="0" scrolling="no" ></iframe>
+product
+1. wikipedia
+2. code pen 
+3. codeembed
+4. jsfiddle
+5. stack overflow
+6. quora

@@ -15,11 +15,51 @@
                 {{ form.url }}
                 <button type="submit">Get Post</button>
             </form>
-        <div class="post">
+        <div class="post" id = "post">
+            <script>
+                var domain = '{{domain}}';
+               console.log(domain);
+               if (domain === "pinterest"){
+                   console.log('True');
+                   var post = document.getElementById('post');
+                   var div = document.createElement('div');
+                   div.className = 'btn-group';
+                   post.appendChild(div);
+                   var small = document.createElement('button');
+                   small.innerHTML = "Small";
+                   small.addEventListener('click', function(){
+                       var a = document.getElementById('pinterest');
+                       a.setAttribute('width', '236');
+                       a.setAttribute('height', '600'); 
+                   });
+                   div.appendChild(small);
+                   var medium = document.createElement('button');
+                   medium.innerHTML = "Medium";
+                   medium.addEventListener('click', function(){
+                       var a = document.getElementById('pinterest');
+                       a.setAttribute('width', '345');
+                       a.setAttribute('height', '700');  
+                   });
+                   div.appendChild(medium);
+                   var large = document.createElement('button');
+                   large.innerHTML = "Large";
+                   large.addEventListener('click', function(){
+                       var a = document.getElementById('pinterest');
+                       a.setAttribute('width', '450');
+                       a.setAttribute('height', '800');  
+                   });
+                   div.appendChild(large);
+               }
+           </script>
             {{ link| safe }}
         </div>
-        <blockquote class="imgur-embed-pub" lang="en" data-id="a/uoU6pSA"  ><a href="//imgur.com/a/uoU6pSA">Mcrib</a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
-        </center>
+         </center>
+        <!--<div class="btn-group">
+            <button>Apple</button>
+            <button>Samsung</button>
+            <button>Sony</button>
+          </div> -->
+       
         <style>
             body {
                 background-color: #fbfbfb;
@@ -47,6 +87,30 @@
                 -moz-transition: all ease 0.3s;
                 -o-transition: all ease 0.3s;
                 -ms-transition: all ease 0.3s;
+                }
+                .btn-group button {
+                background-color:white; /* Green background */
+                border: 1px solid grey; /* Green border */
+                color: black; /* White text */
+                padding: 10px 24px; /* Some padding */
+                cursor: pointer; /* Pointer/hand icon */
+               
+                }
+
+                /* Clear floats (clearfix hack) */
+                .btn-group:after {
+                content: "";
+                clear: both;
+                display: table;
+                }
+
+                .btn-group button:not(:last-child) {
+                border-right: none; /* Prevent double borders */
+                }
+
+                /* Add a background color on hover */
+                .btn-group button:hover {
+                background-color: grey;
                 }
         </style>
     </body> 
