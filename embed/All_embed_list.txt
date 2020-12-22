@@ -1,0 +1,47 @@
+1. Flicker (api)
+2. Imgur (Done)
+3. Instagram (api)
+4. 500px (api)
+5. pintrest (Done)
+6. Giphy  (Done)
+7. pexels (Done)
+8. Pollstar (Done)
+9. Kuula (Done)
+10. we heart it  (Done) 
+11. hackster.io (Done)
+12. gfycat (Done)
+13. reddit (Done)
+14. github gist (Done) 
+15. tumblr (not working )
+16. Dribble (self imlementation needed or use api)
+
+product
+1. wikipedia ()
+2. code pen (Done)
+3. codeembed ( same as embedly for medium)
+4. jsfiddle (xframe-option set to sameorigin)
+5. stack overflow ( no format )
+6. quora (api)
+7. medium
+8. JS Bin
+9. Dabblet
+10. code sandbox
+11. Outpan
+12. Codiad
+13. vizhub (Done)
+14. slideshare (api)
+15. posixion (Done)
+16. strawpoll (Done)
+17. actionbutton (Not Working)
+18. pollforall (Done)
+19. uilicious (Done)
+20. kickstarter (Done)
+21. product Hunt (api)
+22. google data studio (Done)
+23. google map (api)
+24. infogram (api)
+25. tunein (Done)
+26. codeply (Done)
+27. relayto (Done)
+
+

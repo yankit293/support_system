@@ -54,6 +54,24 @@
             {{ link| safe }}
         </div>
          </center>
+         <style>
+            /* mobil */
+            .posixion-iframe {
+                max-width: 100%;
+                width: 100vw;
+                height: 90vh;
+                border: 0;
+            }
+          
+            /* tablet & dektop */
+            @media only screen and (min-width: 600px) {
+              .posixion-iframe {
+                  max-width: 700px;
+                  width: 100%;
+                  height: 500px;
+              }
+            }
+          </style>
         <!--<div class="btn-group">
             <button>Apple</button>
             <button>Samsung</button>
