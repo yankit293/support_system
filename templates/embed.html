@@ -4,6 +4,7 @@
     <head>
     <title>embed</title>
     <!-- <script src="{% static 'embed.js' %}"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.4/mobile-detect.min.js"></script>
     </head>
     <body>
         <center>
@@ -52,6 +53,38 @@
                }
            </script>
             {{ link| safe }}
+        </div>
+        <div class= "invite-btn">
+            <p><button type="submit" id = "invite" >Invite</button></p>
+            <script>
+                var md = new MobileDetect(window.navigator.userAgent);
+                var detect = md.mobile();
+                console.log(detect);
+                var invite = document.getElementById("invite");
+                invite.addEventListener('click', function(){
+
+                    if ( detect !== null){
+                        console.log("This is mobile");
+                        Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+                        emailIntent.putExtra(android.content.Intent.EXTRA_CC, aEmailCCList);
+                        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "My subject");
+                        emailIntent.setType("plain/text");
+                        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "My message body.");
+                        startActivity(emailIntent);
+                  
+                    }
+                    else{
+                        var emailSubject = "Get%20contributions%20on%20ideas,%20blogs%20and%20knowledge-bases%20at%20Piblitz";
+                        var emailBody = "test%20mail%20for%20inviting%20your%20friends";
+                        var href = "https://mail.google.com/mail?view=cm&tf=0"
+                        + (emailSubject ? ("&su=" + emailSubject) : "") 
+                        + (emailBody ? ("&body=" + emailBody) : "");
+                        window.open(href, "_blank");
+
+                    }
+                    
+                });
+            </script>
         </div>
          </center>
          <style>
