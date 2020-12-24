@@ -3,7 +3,8 @@ from .forms import urlInputForm
 import re
 from urllib.parse import urlparse
 
-
+def invite(request):
+    return render(request, 'invite.html')
 def embed(request):
     
     if request.method == 'POST':
