@@ -13,15 +13,14 @@
           <div>
             <button class="btn btn-primary btn-floating" id = "invite" style="background-color: #0082ca">
                 <i class="fab fa fa-plus"></i></button>
-              </div>
-                <div class="btn" id= "btn-group" style="margin-top: 10px;" hidden>
+                <span><div class="btn" id= "btn-group" hidden>
                   <button type="button" class="btn btn-danger" id = "gmail" data-mdb-toggle="tooltip" data-mdb-placement="bottom" title="Gmail" style="background-color:#dd4b39">
                     <i class="fab fa-google"></i></button>
-                    <button class="btn btn-primary btn-floating" id = "outlook" data-mdb-toggle="tooltip" data-mdb-placement="bottom" title="Windows Mail" style="background-color: #0082ca">
-                      <i class="fab fa-windows"></i></button>
-                      <button class="btn btn-dark btn-floating" data-mdb-toggle="tooltip" data-mdb-placement="bottom" title="Apple Mail" id = "apple-mail" >
-                        <i class="fab fa-apple"></i></button>
+                    <button class="btn btn-dark" id ="system_mail" data-mdb-toggle="tooltip" data-mdb-placement="bottom" title="Mail">
+                      <i class="fas fa-envelope"></i></button>
+                    </span>
                 </div>
+              </div>
             <script>
                 var md = new MobileDetect(window.navigator.userAgent);
                 var detect = md.mobile();
@@ -56,19 +55,8 @@
                     + (emailBody ? ("&body=" + emailBody) : "");
                     window.open(href, "_blank");
                 });
-                var outlook = document.getElementById('outlook');
-                outlook.addEventListener('click', function(){
-                    console.log("This is outlook");
-                    var emailSubject = "Get%20contributions%20on%20ideas,%20blogs%20and%20knowledge-bases%20at%20Piblitz";
-                    var emailBody = "test%20mail%20for%20inviting%20your%20friends";
-                    var href = "mailto:?"
-                    + (emailSubject ? ("&subject=" + emailSubject) : "") 
-                    + (emailBody ? ("&body=" + emailBody) : "");
-                    window.open(href, "_blank");
-                });
-                var apple_mail = document.getElementById('apple-mail');
-                outlook.addEventListener('click', function(){
-                    console.log("This is Apple mail");
+                var system_mail = document.getElementById('system_mail');
+                system_mail.addEventListener('click', function(){
                     var emailSubject = "Get%20contributions%20on%20ideas,%20blogs%20and%20knowledge-bases%20at%20Piblitz";
                     var emailBody = "test%20mail%20for%20inviting%20your%20friends";
                     var href = "mailto:?"
