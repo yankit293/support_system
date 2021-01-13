@@ -27,7 +27,7 @@
   <body>
     <header class="static-top">
         <nav class="navbar navbar-expand-lg  static-top" style="max-width: 1400px;margin-left: auto;">
-            <a class="logo-link" href="/"><img class="img-fluid pi_logo float-left my-lg-3 my-5" style="max-width: 100%; height: 40px;" src="/static/piblitz-logo.svg" alt="Piblitz"></a>
+            <a class="logo-link" href="/"><img class="img-fluid pi_logo float-left my-lg-3 my-5" style="max-width: 100%; height: 40px;" src="{% static 'piblitz-logo.svg'%}" alt="Piblitz"></a>
                 <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
@@ -64,7 +64,7 @@
             <div class="row">
                 <div class="col-lg-4">
                     <div class="ml-lg-5 ml-3">
-                        <img class="mb-3 mt-3" style="max-width:300px;" src="/static/piblitz-logo.svg" alt="Piblitz">
+                        <img class="mb-3 mt-3" style="max-width:300px;" src="{% static 'piblitz-logo.svg'%}" alt="Piblitz">
                         <h3 style="font: var(--heading-five);color: #01225A;line-height: var(--spacing-3)">
                             World's first collaborative Knowledge Development + Documentation platform.
                         </h3>
@@ -78,7 +78,7 @@
                     <h3 style="font: var(--heading-four);line-height: var(--spacing-4);">
                         Help us build Piblitz. Give your Suggestions and Feedback.
                     </h3>
-                    <button class="schedule" type="submit" style="height:fit-content;outline:0;" onclick="window.open('https://calendly.com/piblitz')">
+                    <button class=" btn btn-primary" type="submit" onclick="window.open('https://calendly.com/piblitz')">
                         <i class="fa fa-phone fa-lg" aria-hidden="true"></i>&nbsp;Schedule a call
                         </button>
                     <ul style="padding: 0;list-style-type: none;" class="mt-2">
@@ -94,13 +94,13 @@
                                 <br>
                                 <h4>SOCIAL</h4>
                                 <ul style="padding: 0;list-style-type: none;">
-                                    <li><i class="fa fa-twitter m-1"></i>
+                                    <li><i class="fab fa-twitter m-1"></i>
                                         <a aria-label="Twitter" href="https://twitter.com/piblitz" target="__blank" rel="noreferrer noopener">Twitter</a></li>
-                                    <li><i class="fa fa-instagram m-1"></i>
+                                    <li><i class="fab fa-instagram m-1"></i>
                                         <a aria-label="Instagram" href="https://www.instagram.com/piblitz_official/" target="__blank" rel="noreferrer noopener">Instagram</a></li>
-                                    <li><i class="fa fa-facebook m-1"></i>
+                                    <li><i class="fab fa-facebook m-1"></i>
                                         <a aria-label="Facebook" href="https://www.facebook.com/pg/Piblitz-106418777565639/services/?ref=page_internal" target="__blank" rel="noreferrer noopener">Facebook</a></li>
-                                    <li><i class="fa fa-linkedin m-1"></i>
+                                    <li><i class="fab fa-linkedin m-1"></i>
                                         <a aria-label="linkedin" href="https://www.linkedin.com/company/piblitz-technologies/" target="__blank" rel="noreferrer noopener">LinkedIn</a></li>
                                     <li><i class="fa fa-comment m-1"></i>
                                         <a aria-label="Piblitz Contact Mail" href="mailto:contact@piblitz.com?Subject=Hello%20Piblitz">Contact</a></li>

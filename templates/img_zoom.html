@@ -1,0 +1,745 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src = "{% static 'jszip.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fast-xml-parser/3.17.5/parser.js" integrity="sha512-+oa7q7U+mv1Z24WZgSomOxNIdfT9PeHi5CYrpQiqr1yU5c94QfcoiLVOqQheSpCknMO0kChujWBzfcXUk8dLhA==" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/txml@4.0.0/tXml.min.js" integrity="sha256-JVxBZ4O0VyKbBrtpGknLb74c7h/KaxSWs86afZhn1Ls=" crossorigin="anonymous"></script>
+    <title>Zoom</title>
+  </head>
+  <body>
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous"></script>
+    -->
+    <div id="container">
+        <div id="slide">
+            <img src="https://iso.500px.com/wp-content/uploads/2014/07/big-one.jpg">
+        </div>
+    </div>
+    <div>
+        <input type="file" name="inputfile"
+        id="inputfile"> 
+        <button type="button" id="test">Load</button>
+    </div>
+    <style>
+        #container{
+        width:500px;
+        height:500px;
+        overflow:hidden;
+        display: inline-block;
+        }
+        #slide{
+        width:100%;
+        height:100%;
+        overflow:hidden;
+        display: inline-block;
+        transition: transform .3s;
+        }
+        img{
+        width:auto;
+        height:auto;
+        max-width:100%;
+        }
+    </style>
+    <script>
+        /**
+            * the FZ constructor
+            *
+            */
+            class FZ {
+                /**
+                 *
+             */
+                constructor(uri) {
+                    this.xml = undefined; // store the raw xml data
+                    this.filename = uri || ''; // store the fzz filename
+                    this.fritzingVersion = '';
+                    this.boards = []; // list of FZBoard items
+                    this.programs = {}; // list of FZProgram items
+                    this.instances = {}; //
+                    this.views = {}; //
+                }
+
+                /**
+                 * get the BOM
+                 */
+                getBOM() {
+                    let bomData = [];
+                    for (let i = 0; i < this.fz.instances.length; i++) {
+                        // console.log(this.fz.instances[i]);
+                        if (this.fz.instances[i].moduleIdRef !== 'WireModuleID' && this.fz.instances[i].moduleIdRef !== 'LogoImageModuleID') {
+                            let bomItem = {
+                                moduleIdRef: this.fz.instances[i].moduleIdRef,
+                                active: true,
+                            };
+                            bomData.push(bomItem);
+                        }
+                    }
+                    return bomData;
+                }
+            }
+       
+            class FZBoard {
+                /**
+                 * the FZBoard constructor
+                 */
+                constructor() {
+                    this.moduleId = '';
+                    this.title = '';
+                    this.instance = '';
+                    this.width = '';
+                    this.height = '';
+                }
+            }
+
+            class FZProgram {
+                /**
+                 * the FZProgram constructor
+                 */
+                constructor() {
+                    this.language = '';
+                    this.source = '';
+                }
+            }
+
+            // parse fz xml data and return a FZ object.
+            function parseFZ(filename, src, cb) {
+                let tmpFZ = new FZ();
+                tmpFZ.filename = filename;
+                tmpFZ.xml = src;
+                //console.log(src);
+                var options = {
+                    ignoreAttributes: false,
+                    ignoreNameSpace: false,
+                };
+                var jsonobj = parser.parse(src, options);
+                console.log(jsonobj);
+                if (jsonobj) {
+                    tmpFZ.fritzingVersion = jsonobj.module["@_fritzingVersion"]
+                    var tmpkeys = Object.keys(jsonobj.module);
+                    //console.log(tmpkeys);
+                    for (var i = 0; i < tmpkeys.length; i++) {
+                        //console.log(tmpkeys[i]);
+                        //
+                        switch (tmpkeys[i]) {
+                            case 'boards':
+                                tmpFZ.boards = parseFZBoards(jsonobj.module.boards);
+                                //console.log("End");
+                                break;
+                            //
+                            case 'programs':
+                                tmpFZ.programs = parseFZPrograms(jsonobj.module.programs);
+                                break;
+                            //
+                            case 'views':
+                                tmpFZ.views = parseFZViews(jsonobj.module.views);
+                                break;
+                            //
+                            case 'instances':
+                                tmpFZ.instances = parseFZInstances(jsonobj.module.instances);
+                                break;
+                            // 
+                            default:
+                                console.log(tmpkeys[i]);
+                        }
+                        // 
+                    }
+                    //cb(tmpFZ); 
+                }
+               /*  var xmldata = txml.parse(src);
+                console.log(xmldata);
+                var tmpXML = xmldata.documentElement.children;
+                console.log(tmpXML);
+                txml.parse(src, (err, xmlDoc) => {
+                    console.log("Ankit")
+                        if (xmlDoc) {
+                        console.log('#-------------------------------------');
+                        console.log(JSON.stringify(xmlDoc, '', '  '));
+                        console.log(xmlDoc);
+                        console.log('#-------------------------------------');
+        
+                        tmpFZ.fritzingVersion = xmlDoc.module.$.fritzingVersion
+                        
+                        var tmpXML = xmlDoc.documentElement.childNodes;
+                        console.log(tmpXML);
+                        for (var i = 0; i < tmpXML.length; i++) {
+                        console.log(tmpXML[i].nodeName);
+                        //
+                        switch (tmpXML[i].nodeName) {
+                           case 'boards':
+                            tmpFZ.boards = parseFZBoards(xmlDoc.module.boards);
+                            break;
+                        //
+                           case 'programs':
+                            tmpFZ.programs = parseFZPrograms(xmlDoc.module.programs);
+                            break;
+                        //
+                           case 'views':
+                            tmpFZ.views = parseFZViews(xmlDoc.module.views);
+                            break;
+                        //
+                           case 'instances':
+                            tmpFZ.instances = parseFZInstances(xmlDoc.module.instances);
+                            break;
+                        //
+                          default:
+                            console.log(tmpXML[i]);
+                         }
+                        //
+                       }
+                        //
+                     }
+                        console.log(tmpFZ);
+                        return tmpFZ;
+                     }); */
+            } 
+            function parseFZBoards(xml) {
+                console.log('parseFZBoards', xml);
+                let tmpNodes = Object.keys(xml);
+                console.log('tmpNodes', tmpNodes);
+                //console.log('BOARD', tmpNodes.length, tmpNodes);
+
+                let tmpBoards = [];
+
+                for (let j = 0; j < tmpNodes.length; j++) {
+                    console.log(tmpNodes[j]);
+                    if (tmpNodes[j] === 'board') {
+                        //console.log("here");
+                        let tmpBoard = new FZBoard();
+
+                        let tmpAttr = Object.keys(xml[tmpNodes[j]]);
+                        console.log(tmpAttr);
+                        for (let a = 0; a < tmpAttr.length; a++) {
+                            console.log(tmpAttr[a]);
+                            switch (tmpAttr[a]) {
+                                case '@_moduleId':
+                                    tmpBoard.moduleId = xml.board["@_moduleId"];
+                                    console.log('tmpBoard.moduleId', tmpBoard.moduleId);
+                                    break;
+                                case '@_title':
+                                    tmpBoard.title = xml.board["@_title"];
+                                    break;
+                                case '@_instance':
+                                    tmpBoard.instance = xml.board["@_instance"];
+                                    break;
+                                case '@_width':
+                                    // TODO: parse measurement
+                                    tmpBoard.width = xml.board["@_width"];
+                                    break;
+                                case '@_height':
+                                    // TODO: parse measurement
+                                    tmpBoard.height = xml.board["@_height"];
+                                    break;
+                                default:
+                            }
+                        }
+                        
+                        //console.log(tmpBoard.moduleId);
+                        /* console.log(tmpAttr);
+                        for (let a = 0; a < tmpAttr.length; a++) {
+                            console.log(tmpAttr[a]);
+                            switch (tmpAttr[a].name) {
+                                case 'moduleId':
+                                    tmpBoard.moduleId = tmpAttr[a].nodeValue;
+                                    console.log('tmpBoard.moduleId', tmpBoard.moduleId);
+                                    break;
+                                case 'title':
+                                    tmpBoard.title = tmpAttr[a].nodeValue;
+                                    break;
+                                case 'instance':
+                                    tmpBoard.instance = tmpAttr[a].nodeValue;
+                                    break;
+                                case 'width':
+                                    // TODO: parse measurement
+                                    tmpBoard.width = tmpAttr[a].nodeValue;
+                                    break;
+                                case 'height':
+                                    // TODO: parse measurement
+                                    tmpBoard.height = tmpAttr[a].nodeValue;
+                                    break;
+                                default:
+                            }
+                        } */
+                        tmpBoards.push(tmpBoard);
+                    }
+                }
+                console.log('tmpBoards:', tmpBoards);
+                return tmpBoards; 
+            }
+
+            function parseFZPrograms(xml) {
+                // console.log('parseFZPrograms', xml);
+                let programs = [];
+                for (let i = 0; i < xml.childNodes.length; i++) {
+                    let tmpNode = xml.childNodes[i];
+                    // console.log('view', tmpNode);
+                    if (tmpNode.nodeName === 'program') {
+                        // console.log(tmpNode);
+
+                        let tmpProgram = new FZProgram();
+                        tmpProgram.source = tmpNode.innerHTML;
+
+                        for (let a = 0; a < tmpNode.attributes.length; a++) {
+                            let tmpAttr = tmpNode.attributes[a];
+                            switch (tmpAttr.name) {
+                                case 'language':
+                                    tmpProgram.language = tmpAttr.nodeValue;
+                                    break;
+                            }
+                        }
+
+                        programs.push(tmpProgram);
+                    }
+                }
+                return programs;
+            }
+
+            function parseFZViews(xml) {
+                console.log('parseFZViews', xml);
+                let tmpNode = Object.keys(xml);
+                console.log('view', tmpNode);
+
+                // the object we want to return
+                let views = [];
+
+                for (let i = 0; i < tmpNode.length; i++) {
+                     
+                    if (tmpNode[i] === 'view') {
+                        // console.log('attributes', tmpNode.attributes);
+
+                        // the view data we push to the views variable
+                       
+                        let innertmpkeys = xml[tmpNode[i]];
+                        for (let a = 0; a < Object.keys(innertmpkeys).length; a++) {
+                            let tmpView = {
+                                name: '',
+                                backgroundColor: '',
+                                gridSize: '',
+                                showGrid: true,
+                                alignToGrid: true,
+                                viewFromBelow: false,
+                                gpgKeepout: '',
+                                autorouteViaHoleSize: '',
+                                autorouteTraceWidth: '',
+                                autorouteViaRingThickness: '',
+                                drcKeepout: '',
+                            };
+                            let tmpAttr = innertmpkeys[a];
+                            console.log(tmpAttr);
+                            let tmpkeys = Object.keys(tmpAttr);
+                            for (let b = 0; b < tmpkeys.length; b++) {
+                                //console.log(tmpkeys[b]);
+                                switch (tmpkeys[b]) {
+                                    case '@_name':
+                                        tmpView.name = tmpAttr["@_name"];
+                                        console.log(tmpView.name);
+                                        break;
+
+                                    case '@_backgroundColor':
+                                        tmpView.backgroundColor = tmpAttr["@_backgroundColor"];
+                                        break;
+
+                                    case '@_gridSize':
+                                        tmpView.gridSize = tmpAttr["@_gridSize"];
+                                        break;
+
+                                    case '@_showGrid':
+                                        tmpView.showGrid =  tmpAttr["@_showGrid"];
+                                        break;
+
+                                    case '@_alignToGrid':
+                                        tmpView.alignToGrid =  tmpAttr["@_alignToGrid"];
+                                        break;
+
+                                    case '@_viewFromBelow':
+                                        tmpView.viewFromBelow = tmpAttr["@_viewFromBelow"];
+                                        break;
+
+                                }
+
+                            }
+                            console.log(views);
+                            views.push(tmpView);
+                            console.log("tmpView:", tmpView);
+                            
+                        }
+                        
+                        
+                    }
+                    
+                }
+                console.log(views);
+                return views;
+            }
+
+            function parseFZInstances(xml) {
+                console.log('parseFZInstances', xml);
+                let tmpNode = Object.keys(xml);
+                console.log('view', tmpNode);
+
+                let instances = [];
+
+                for (let i = 0; i < tmpNode.length; i++) {
+                    
+                    
+                    if (tmpNode[i] === 'instance') {
+                        // console.log(tmpNode);
+
+                        
+                        let innertmpkeys = xml[tmpNode[i]];
+                        // get the attributes of the instance tag...
+                        //console.log('attributes', innertmpkeys);
+                        for (let a = 0; a < Object.keys(innertmpkeys).length; a++) {
+                            let tmpInstance = {
+                                moduleIdRef: '',
+                                modelIndex: '',
+                                path: '',
+                                property: {
+                                    name: '',
+                                    value: '',
+                                },
+                                title: '',
+                                views: {
+                                    breadboardView: undefined,
+                                    pcbView: undefined,
+                                    schematicView: undefined,
+                                },
+                            };
+                            let tmpAttr = innertmpkeys[a];
+                            console.log(tmpAttr);
+                            let tmpkeys = Object.keys(tmpAttr);
+                            for (let b = 0; b < tmpkeys.length; b++) {
+
+                                switch (tmpkeys[b]) {
+                                    case '@_moduleIdRef':
+                                        tmpInstance.moduleIdRef = tmpAttr["@_moduleIdRef"];
+                                        //console.log(tmpInstance.moduleIdRef);
+                                        break;
+                                    case '@_modelIndex':
+                                        tmpInstance.modelIndex = tmpAttr["@_modelIndex"];
+                                        break;
+                                    case '@_path':
+                                        tmpInstance.path = tmpAttr["@_path"];
+                                        break;
+                                }
+                            }
+
+                            for (let j = 0; j < Object.keys(tmpAttr).length; j++) {
+                                let tmpkey = Object.keys(tmpAttr);
+                                console.log('--', j, tmpkey);
+                                for (let i = 0; i < tmpkey.length; i++) {
+                                    switch (tmpkey[i]) {
+                                        // get property...
+                                        case 'property':
+                                            var tmpProp = tmpAttr['property'];
+                                            console.log('tmpProp:', tmpProp);
+                                            // get attributes...
+                                            for (let pa = 0; pa < tmpProp.length; pa++) {
+                                                console.log(tmpProp[pa]);
+                                                let tmppropvalues = tmpProp[pa];
+                                                console.log(tmppropvalues);
+                                                let tmppropkeys = Object.keys(tmppropvalues);
+                                                console.log(tmppropkeys);
+                                                for (let pv = 0; pv < tmpProp[pa].length; pv++) {
+                                                    let propvalue = tmppropvalues[pv];
+                                                    switch (propvalue) {
+                                                        case '@_name':
+                                                            tmpInstance.property.name = tmpProp[pa]['@_name'];
+                                                            break;
+                                                        case '@_value':
+                                                            tmpInstance.property.value = tmpProp[pa]['@_value'];
+                                                            break;
+                                                    }
+
+                                                }
+
+                                            }
+                                            break;
+
+                                        // get title...
+                                        case 'title':
+                                            // console.log('TITLE', tmpNode.childNodes[j].innerHTML);
+                                            tmpInstance.title = tmpAttr["title"];
+                                            break;
+
+                                        // get views...
+                                       /*  case 'views':
+                                            tmpInstance.views = parseFZInstancesViews(tmpNode.childNodes[j]);
+                                            break; */
+                                    }
+                                }
+
+                            }
+                            //console.log(tmpInstance);
+                            //instances.push(tmpInstance);
+
+
+                            //console.log(tmpInstance);
+                            instances.push(tmpInstance);
+                        }
+
+                    }
+                }
+                console.log(instances);
+                return instances;
+            }
+
+            function parseFZInstancesViews(xml) {
+                // console.log('call parseFZInstancesViews', xml);
+                let tmpViews = {
+                    breadboardView: undefined,
+                    pcbView: undefined,
+                    schematicView: undefined,
+                };
+
+
+                for (var i = 0; i < xml.childNodes.length; i++) {
+                    let tmpNode = xml.childNodes[i];
+                    // console.log(tmpNode.nodeName);
+
+                    let tmpInstanceView = {
+                        layer: '',
+                        geometry: {
+                            x: 0,
+                            y: 0,
+                            z: 0,
+                        },
+                        connectors: [],
+                    };
+
+                    switch (tmpNode.nodeName) {
+                        case 'breadboardView':
+
+                            // console.log('BB', tmpNode.childNodes);
+                            for (let ib = 0; ib < tmpNode.childNodes.length; ib++) {
+                                // console.log(tmpNode.childNodes[ib]);
+                                switch (tmpNode.childNodes[ib].nodeName) {
+                                    case 'geometry':
+                                        // console.log('X', 'Y', tmpNode.childNodes[ib].attributes);
+                                        for (var i = 0; i < tmpNode.childNodes[ib].attributes.length; i++) {
+                                            let tmpAttr = tmpNode.childNodes[ib].attributes[i];
+                                            // console.log(tmpAttr);
+                                            switch (tmpAttr.name) {
+                                                case 'x':
+                                                    tmpInstanceView.geometry.x = tmpAttr.nodeValue;
+                                                    break;
+                                                case 'y':
+                                                    tmpInstanceView.geometry.y = tmpAttr.nodeValue;
+                                                    break;
+                                                case 'z':
+                                                    tmpInstanceView.geometry.z = tmpAttr.nodeValue;
+                                                    break;
+                                            }
+                                        }
+                                        break;
+
+                                    case 'connectors':
+                                        var tmpCons = tmpNode.childNodes[ib].childNodes;
+                                        // console.log(tmpCons);
+                                        for (let ic = 0; ic < tmpCons.length; ic++) {
+                                            switch (tmpCons[ic].nodeName) {
+                                                case 'connector':
+                                                    // console.log('CON', tmpCons[ic]);
+
+                                                    break;
+                                                default:
+                                            }
+                                        }
+                                        break;
+                                }
+                            }
+                            tmpViews.breadboardView = tmpInstanceView;
+
+                            break;
+                    }
+                }
+
+                return tmpViews;
+            }
+
+            class FZZ {
+                /**
+                 * The FZZ constructor
+                 * @param {Object} opt constructor options
+                 * @param {Object} opt.uri name of the fzz (zip archive) file
+                 * @param {Object} opt.zip the list of files contained at the fzz archive
+                 * @param {Object} opt.files
+                 * @param {Object} opt.fz
+                 * @param {Object} opt.code
+                 * @param {Object} opt.parts
+                 */
+                constructor(opt) {
+                    opt = opt || {};
+                    this.uri = opt.uri || undefined;
+                    this.zip = opt.zip || undefined;
+                    this.files = opt.files || [];
+                    this.fz = opt.fz || new FZ();
+                    // this.code = opt.code || new FZZCode();
+                    this.parts = opt.parts || []; // list of parts (fzp and svg files)
+                }
+            }
+    </script>
+    <script>
+        document.getElementById('inputfile').addEventListener('change', function () {
+            var array = new FileReader();
+            array.onload = function () {
+                var data = array.result;
+                console.log(data)
+                readFZZ(null, data, (fzz) => {
+                    console.log("FZZ", fzz);
+                });
+            }
+            array.readAsArrayBuffer(this.files[0]);
+        });
+
+        function readFZZ(url, data, cb) {
+            let tmpFZZ = new FZZ();
+            tmpFZZ.uri = url;
+            // cb(tmpFZZ)
+            let Zip = new JSZip();
+            Zip.loadAsync(data).then((zip) => {
+                tmpFZZ.zip = zip;
+                // console.log('ZIP', zip);
+                // console.log('FZZ Files:', zip.files);
+
+                let totalFiles = Object.keys(zip.files).length;
+                // console.log('TOTAL FILES', totalFiles);
+                // let counter = 0;
+                console.log(zip);
+                for (var filename in zip.files) {
+                    if (zip.files.hasOwnProperty(filename)) {
+                        // add each filename to the files array...
+                        tmpFZZ.files.push(filename);
+
+                        // check the file extension
+                        let ext = filename.split('.').pop();
+                        // console.log(counter, 'FILENAME', filename, ext);
+
+                        switch (ext) {
+                            case 'fz':
+                                console.log('fz data');
+                                tmpFZZ.fz.filename = filename;
+                                console.log(zip.files[filename]._data);
+                                zip.file(filename).async('string').then(function success(text) {
+                                    parseFZ(filename, text, (data) =>{
+                                        tmpFZZ.fz = data;
+                                        
+
+                                    });
+
+                                    //         //   // }
+                                });
+                            //
+                            //         break;
+                            //
+                            case 'fzp':
+                                // TODO: load fzp
+                                console.log('FZP', filename);
+                                break;
+
+                            case 'svg':
+                                // TODO: loadsvg
+                                console.log('SVG', filename);
+                                break;
+
+                            case 'ino':
+                                console.log('CODE', filename);
+                                //         // zip.file(filename).async('string').then(function success(text) {
+                                //         // //   counter++;
+                                //         // //   // console.log(counter);
+                                //         //   tmpFZZ.code.addSource(filename, text);
+                                //         // //   // if (counter === totalFiles) {
+                                //         // //   //   cb(tmpFZZ);
+                                //         // //   // }
+                                //         // });
+                                break;
+
+                            default:
+                                throw new Error('filetype not supported');
+                        }
+                    }
+                } // end for
+
+                // cb(tmpFZZ);
+            }).catch((e) => {
+                throw e;
+            });
+        }
+    </script>
+    <script>
+        $(document).ready(function (){
+            var scroll_zoom = new ScrollZoom($('#container'),6,0.5)
+        })
+
+
+        function ScrollZoom(container,max_scale,factor){
+            var target = container.children().first()
+            var size = {w:target.width(),h:target.height()}
+            var pos = {x:0,y:0}
+            var zoom_target = {x:0,y:0}
+            var zoom_point = {x:0,y:0}
+            var scale = 1
+            target.css('transform-origin','0 0')
+            target.on("mousewheel DOMMouseScroll",scrolled)
+
+            function scrolled(e){
+                var offset = container.offset()
+                zoom_point.x = e.pageX - offset.left
+                zoom_point.y = e.pageY - offset.top
+
+                e.preventDefault();
+                var delta = e.delta || e.originalEvent.wheelDelta;
+                if (delta === undefined) {
+                //we are on firefox
+                delta = e.originalEvent.detail;
+                }
+                delta = Math.max(-1,Math.min(1,delta)) // cap the delta to [-1,1] for cross browser consistency
+
+                // determine the point on where the slide is zoomed in
+                zoom_target.x = (zoom_point.x - pos.x)/scale
+                zoom_target.y = (zoom_point.y - pos.y)/scale
+
+                // apply zoom
+                scale += delta*factor * scale
+                scale = Math.max(1,Math.min(max_scale,scale))
+
+                // calculate x and y based on zoom
+                pos.x = -zoom_target.x * scale + zoom_point.x
+                pos.y = -zoom_target.y * scale + zoom_point.y
+
+
+                // Make sure the slide stays in its container area when zooming out
+                if(pos.x>0)
+                    pos.x = 0
+                if(pos.x+size.w*scale<size.w)
+                    pos.x = -size.w*(scale-1)
+                if(pos.y>0)
+                    pos.y = 0
+                if(pos.y+size.h*scale<size.h)
+                    pos.y = -size.h*(scale-1)
+
+                update()
+            }
+
+            function update(){
+                target.css('transform','translate('+(pos.x)+'px,'+(pos.y)+'px) scale('+scale+','+scale+')')
+            }
+        }
+    </script>
+  </body>
+</html>

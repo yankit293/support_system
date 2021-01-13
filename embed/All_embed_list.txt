@@ -1,6 +1,6 @@
-1. Flicker (api)
+1. Flicker (api) (Done)
 2. Imgur (Done)
-3. Instagram (api)
+3. Instagram (api) (Done)
 4. 500px (api)
 5. pintrest (Done)
 6. Giphy  (Done)
@@ -21,7 +21,7 @@ product
 3. codeembed ( same as embedly for medium)
 4. jsfiddle (xframe-option set to sameorigin)
 5. stack overflow ( no format )
-6. quora (api)
+6. quora (api) (self implementation from html)
 7. medium
 8. JS Bin
 9. Dabblet
@@ -29,7 +29,7 @@ product
 11. Outpan
 12. Codiad
 13. vizhub (Done)
-14. slideshare (api)
+14. slideshare (api) (done)
 15. posixion (Done)
 16. strawpoll (Done)
 17. actionbutton (Not Working)
@@ -43,5 +43,17 @@ product
 25. tunein (Done)
 26. codeply (Done)
 27. relayto (Done)
+28. commaful (Done)
+29. facer.io (Done)
+30. tech.io  (Done)
+31. expo snack (Done)
+32. pbs (api)
+33. prezi (x-frame deny )
+34. stack exchange (self implementation)
+35. facebook (Done)
 
+fritzing
+gazebo
+dharmesh.rajput@piblitz.com
+https://aisler.net/p/HRVSICYI/board?timetravel=450162
 

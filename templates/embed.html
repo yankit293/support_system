@@ -14,6 +14,17 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 
     <!-- <script src="{% static 'embed.js' %}"></script> -->
+    <script>
+    window.fbAsyncInit = function() {
+        FB.init({
+        appId            : '383815322875780',
+        autoLogAppEvents : true,
+        xfbml            : true,
+        version          : 'v9.0'
+        });
+    };
+    </script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
     
     </head>
     <body>
@@ -26,10 +37,10 @@
                 {{ form.url }}
                 <button type="submit">Get Post</button>
             </form>
-        <div class="post" id = "post">
+            <div class="post" id = "post">
             <script>
                 var domain = '{{domain}}';
-               console.log(domain);
+                console.log(domain);
                if (domain === "pinterest"){
                    console.log('True');
                    var post = document.getElementById('post');
@@ -63,7 +74,10 @@
                }
            </script>
             {{ link| safe }}
-        </div>
+            </div>
+            <div 
+            
+            
          </center>
          <style>
             /* mobil */
