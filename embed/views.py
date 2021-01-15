@@ -10,6 +10,9 @@ def invite(request):
 def ImgZoom(request):
     return render(request, 'img_zoom.html')
 
+def fritzing(request):
+    return render(request, 'fritzing_file_support.html')
+
 def embed(request):
     if request.method == 'POST':
         form = urlInputForm(request.POST)
