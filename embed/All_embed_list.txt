@@ -57,3 +57,29 @@ gazebo
 dharmesh.rajput@piblitz.com
 https://aisler.net/p/HRVSICYI/board?timetravel=450162
 
+fritzing file Support
+fritzing files extension is .FZZ
+
+FZZ object contains 
+1. Fz file
+2. fzp file
+3. svg file
+4. ino file
+
+
+Fz object contains
+1. Board details 
+2. Files name 
+3. fritzing version
+4. instance (Details of all the views, parts and coordinates. )
+5. Programs
+6. views      
+        1. breadboard (This represent Project view as hardware. )
+        2. schematic (This is techinal details)
+        3. pcb (this shows pcb board design)
+
+
+
+
+
+
