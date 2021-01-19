@@ -38,6 +38,357 @@
         </center>  
     </div>
     <script>
+        class FZP {
+            /**
+             * FZP constructor has an opt argument object that can be used to setup data at the initialization.
+             * @param {Object} opt
+             */
+            constructor(opt = {}) {
+                /**
+                 * The FZP module id
+                 * @type {String}
+                 */
+                this.moduleId = opt.module || '';
+
+                /**
+                 * The FZP fritzing version
+                 * @type {String}
+                 */
+                this.fritzingVersion = opt.fritzingVersion || '';
+
+                /**
+                 * The FZP version
+                 * @type {String}
+                 */
+                this.version = opt.version || '0.0.0';
+
+                /**
+                 * The FZP title
+                 * @type {String}
+                 */
+                this.title = opt.title || '';
+
+                /**
+                 * The FZP description
+                 * @type {String}
+                 */
+                this.description = opt.description || '';
+
+                /**
+                 * The FZP author
+                 * @type {String}
+                 */
+                this.author = opt.author || '';
+
+                /**
+                 * The FZP date
+                 * @type {String}
+                 */
+                this.date = opt.date || '';
+
+                /**
+                 * The FZP url
+                 * @type {String}
+                 */
+                this.url = opt.url || '';
+
+                /**
+                 * The FZP label
+                 * @type {String}
+                 */
+                this.label = opt.label || '';
+
+                /**
+                 * The FZP tags
+                 * @type {Array}
+                 */
+                this.tags = opt.tags || [];
+
+                /**
+                 * The FZP taxonomy
+                 * @type {String}
+                 */
+                this.taxonomy = opt.taxonomy || '';
+
+                /**
+                 * The FZP language
+                 * @type {String}
+                 */
+                this.language = opt.language || '';
+
+                /**
+                 * The FZP family
+                 * @type {String}
+                 */
+                this.family = opt.family || '';
+
+                /**
+                 * The FZP variant
+                 * @type {String}
+                 */
+                this.variant = opt.variant || '';
+
+                /**
+                 * The FZP properties
+                 * @type {Object}
+                 */
+                this.properties = opt.properties || {};
+
+                /**
+                 * The FZP views (icon, breadboard, schematic, pcb)
+                 * @type {Object}
+                */
+                /* this.views = {
+                    icon: new FZPView(),
+                    schematic: new FZPView(),
+                    breadboard: new FZPView(),
+                    pcb: new FZPView(),
+                }; */
+
+                /**
+                 * The FZP connectors
+                 * @type {Object}
+                 */
+                this.connectors = opt.connectors || {};
+                /**
+                 * The FZP buses is a map with instances of the Bus class.
+                 * @type {Object}
+                 */
+                this.buses = opt.buses || {};
+            }
+
+            /**
+             * Get the total number of tags.
+             * @return {Number}
+             */
+            totalTags() {
+                return this.tags.length;
+            }
+
+            /**
+             * Set a tag
+             * @param {String} tag
+             * @return {FZP}
+             */
+            setTag(tag) {
+                this.tags.push(tag);
+                return this;
+            }
+
+            /**
+             * Get the total number of properties.
+             * @return {Number}
+             */
+            totalProperties() {
+                return Object.keys(this.properties).length;
+            }
+
+            /**
+             * Create or update a FZPProperty instance to the FZP.
+             * @param {String} key
+             * @param {String} value
+             * @param {Boolean} showInLabel
+             * @return {FZP}
+             */
+            setProperty(key, value = null, showInLabel = false) {
+                if (!key) {
+                    throw new Error('Missing first argument at function');
+                }
+                this.properties[key] = new FZPProperty();
+                this.properties[key].set(value, showInLabel);
+                return this;
+            }
+
+            /**
+             * Get a FZP property by the given key.
+             * @param {String} key
+             * @return {FZPProperty}
+             */
+            getProperty(key) {
+                if (!key) {
+                    throw new Error('Missing first argument at function', key);
+                }
+                return this.properties[key];
+            }
+
+            /**
+             * Set a view
+             * @param {String} name The name of the view can be 'breadboard', 'pcb', or 'schematic'
+             * @param {FZPView} view
+             * @return {FZP}
+             */
+            setView(name, view) {
+                console.log('not jet implemented', name, view);
+                return this;
+            }
+
+
+            /**
+             * Get the total number of connector.
+             * @return {Number}
+             */
+            totalConnector() {
+                return Object.keys(this.connectors).length;
+            }
+
+            /**
+             * setConnector
+             * @param {String} name
+             * @param {FZPConnector} connector
+             * @return {FZP}
+             */
+            setConnector(name, connector) {
+                console.log('not jet implemented', name, connector);
+                return this;
+            }
+
+            /**
+             * Get the total number of buses.
+             * @return {Number}
+             */
+            totalBuses() {
+                return Object.keys(this.buses).length;
+            }
+
+            /**
+             * setBus
+             * @param {String} name
+             * @param {FZPBus} bus
+             * @return {FZP}
+             */
+            setBus(name, bus) {
+                console.log('not jet implemented', name, bus);
+                return this;
+            }
+
+            /**
+             * Load all SVG sources.
+             * @param {String} baseurl
+             * @return {FZP}
+             */
+            loadSVGs(baseurl) {
+                return this.views.breadboard.loadSVG(baseurl)
+                    .then(() => {
+                        return this.views.schematic.loadSVG(baseurl)
+                            .then(() => {
+                                return this.views.pcb.loadSVG(baseurl)
+                                    .then(() => {
+                                        return this;
+                                    });
+                            });
+                    });
+            }
+        }
+
+        function parseFZP(data) {
+            //return new Promise(function (resolve, reject) {
+            let fzp = new FZP();
+            
+            if (data) {
+                var options = {
+                    ignoreAttributes: false,
+                    ignoreNameSpace: false,
+                    attributeNamePrefix: "",
+
+                };
+                var xml = parser.parse(data, options);
+                /* parseXml(data, options, (err, xml) => {
+                    if (err) {
+                        return reject(err);
+                    } */
+                if (xml){
+                    console.log(xml);
+                    console.log(xml.module.tags);
+                    fzp.moduleId = xml.module.moduleId;
+                    fzp.fritzingVersion = xml.module.fritzingVersion;
+                    if (xml.module.version) fzp.version = xml.module.version[0];
+                    if (xml.module.title) fzp.title = xml.module.title[0];
+                    if (xml.module.description) fzp.description = xml.module.description[0];
+                    if (xml.module.author) fzp.author = xml.module.author[0];
+                    if (xml.module.date) fzp.date = xml.module.date[0];
+                    if (xml.module.url) fzp.url = xml.module.url[0];
+                    if (xml.module.label) fzp.label = xml.module.label[0];
+                    if (xml.module.tags) fzp.tags = xml.module.tags.tag[0];
+                    if (xml.module.taxonomy) fzp.taxonomy = xml.module.taxonomy;
+                    if (xml.module.language) fzp.language = xml.module.language;
+                    if (xml.module.family) fzp.family = xml.module.family;
+                    if (xml.module.variant) fzp.variant = xml.module.variant;
+                    if (xml.module.properties) {
+                        fzp.properties = parseProperties(xml.module.properties[0].property);
+                    }
+
+                    if (xml.module.views) {
+                        if (xml.module.views[0].iconView) {
+                            const iconViewLayer = xml.module.views[0].iconView[0].layers[0];
+                            fzp.views.icon.setImage(iconViewLayer.$.image);
+                            fzp.views.icon.setLayerId(iconViewLayer.layer[0].$.layerId);
+                        }
+                        if (xml.module.views[0].breadboardView) {
+                            const breadboardLayer = xml.module.views[0].breadboardView[0].layers[0];
+                            fzp.views.breadboard.setImage(breadboardLayer.$.image);
+                            fzp.views.breadboard.setLayerId(breadboardLayer.layer[0].$.layerId);
+                        }
+                        if (xml.module.views[0].pcbView) {
+                            const pcbViewLayer = xml.module.views[0].pcbView[0].layers[0];
+                            fzp.views.pcb.setImage(pcbViewLayer.$.image);
+                            for (let iLayer = 0; iLayer < pcbViewLayer.layer.length; iLayer++) {
+                                fzp.views.pcb.setLayerId(pcbViewLayer.layer[iLayer].$.layerId);
+                            }
+                        }
+                        if (xml.module.views[0].schematicView) {
+                            const schematicViewLayer = xml.module.views[0].schematicView[0].layers[0];
+                            fzp.views.schematic.setImage(schematicViewLayer.$.image);
+                            fzp.views.schematic.setLayerId(schematicViewLayer.layer[0].$.layerId);
+                        }
+                    }
+
+                    if (xml.module.connectors) {
+                        if (xml.module.connectors[0].connector) {
+                            for (let i = 0; i < xml.module.connectors[0].connector.length; i++) {
+                                const connector = xml.module.connectors[0].connector[i];
+
+                                // create the connector for the three views.
+                                let c = new FZPConnector();
+                                c.id = connector.$.id;
+                                c.name = connector.$.name;
+                                c.type = connector.$.type;
+                                if (connector.description) {
+                                    c.description = connector.description[0];
+                                }
+
+                                if (connector.views[0].breadboardView) {
+                                    c.views.breadboard = parseConnectorView(connector.views[0].breadboardView[0].p[0]);
+                                }
+
+                                if (connector.views[0].schematicView) {
+                                    c.views.schematic = parseConnectorView(connector.views[0].schematicView[0].p[0]);
+                                }
+
+                                if (connector.views[0].pcbView) {
+                                    for (let iPcb = 0; iPcb < connector.views[0].pcbView[0].p.length; iPcb++) {
+                                        switch (connector.views[0].pcbView[0].p[iPcb].$.layer) {
+                                            case 'copper0':
+                                                c.views.pcb.copper0 = parseConnectorView(connector.views[0].pcbView[0].p[iPcb]);
+                                                break;
+                                            case 'copper1':
+                                                c.views.pcb.copper1 = parseConnectorView(connector.views[0].pcbView[0].p[iPcb]);
+                                                break;
+                                        }
+                                    }
+                                }
+
+                                fzp.connectors[c.id] = c;
+                            }
+                        }
+                    }
+
+                    return resolve(fzp);
+                }
+            }
+            //});
+        }
+    </script>
+    <script>
         document.getElementById('inputfile').addEventListener('change', function () {
             var array = new FileReader();
             array.onload = function () {
@@ -87,12 +438,15 @@
                                     //         //   // }
                                 });
                             //
-                                   //  break;
+                                 break;
                             //
                             case 'fzp':
-                                // TODO: load fzp
+                                zip.file(filename).async('string').then(function success(text){
+                                    var data = parseFZP(text);
+                                    console.log(data);
+                                });
                                 console.log('FZP', filename);
-                                break;
+                                //break;
 
                             case 'svg':
                                 // TODO: loadsvg
