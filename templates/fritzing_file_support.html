@@ -1,7 +1,8 @@
 {% load static %}
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,20 +10,22 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
-    <script src = "{% static 'jszip.js' %}"></script>
-    <script src = "{% static 'fzz-loader.js' %}"></script>
+    <script src="{% static 'jszip.js' %}"></script>
+    <script src="{% static 'fzz-loader.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fast-xml-parser/3.17.5/parser.js" integrity="sha512-+oa7q7U+mv1Z24WZgSomOxNIdfT9PeHi5CYrpQiqr1yU5c94QfcoiLVOqQheSpCknMO0kChujWBzfcXUk8dLhA==" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/txml@4.0.0/tXml.min.js" integrity="sha256-JVxBZ4O0VyKbBrtpGknLb74c7h/KaxSWs86afZhn1Ls=" crossorigin="anonymous"></script>
     <title>fritzing File</title>
-  </head>
-  <body>
+</head>
+
+<body>
 
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
     <!-- Option 2: Separate Popper and Bootstrap JS -->
-    
+
     <!--
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous"></script>
@@ -32,10 +35,10 @@
             <div class="card">
                 <h1>Select A fritzing File to view.</h1>
                 <div class="card-body">
-                <input type="file" name="inputfile" id="inputfile">
+                    <input type="file" name="inputfile" id="inputfile">
                 </div>
             </div>
-        </center>  
+        </center>
     </div>
     <script>
         class FZP {
@@ -137,13 +140,13 @@
                 /**
                  * The FZP views (icon, breadboard, schematic, pcb)
                  * @type {Object}
-                */
-                /* this.views = {
+                 */
+                this.views = {
                     icon: new FZPView(),
                     schematic: new FZPView(),
                     breadboard: new FZPView(),
                     pcb: new FZPView(),
-                }; */
+                };
 
                 /**
                  * The FZP connectors
@@ -279,16 +282,379 @@
                     });
             }
         }
+        /**
+         * FZPView class is used by the fzp breadboard, pcb and schematics view.
+         *
+         * @example
+         * const {FZPView} = require('fzp-js')
+         *
+         * let view = new FZPView()
+         */
+        class FZPView {
+            /**
+             * FZPView constructor
+             * @param {String} image
+             * @param {Array} ids
+             * @param {Boolean} flipH
+             * @param {Boolean} flipV
+             * @param {String} svg The raw svg string
+             */
+            constructor(image, ids, flipH, flipV, svg) {
+                /**
+                 * The FZPView image
+                 * @type {String}
+                 */
+                this.image = image || null;
+
+                /**
+                 * The FZPView layer id's
+                 * @type {Array}
+                 */
+                this.layerIds = ids || [];
+
+                /**
+                 * FZPView flip horizontal
+                 * @type {Boolean}
+                 */
+                this.flipHorizontal = (flipH == 'true') || (flipH == true) || false;
+
+
+                /**
+                 * FZPView flip vertical
+                 * @type {Boolean}
+                 */
+                this.flipVertical = (flipV == 'true') || (flipV == true) || false;
+
+                /**
+                 * The FZPView svg data
+                 * @type {String}
+                 */
+                this.svg = svg || null;
+            }
+
+            /**
+             * Set the FZPView image source
+             * @param {String} src The image source
+             * @return {FZPView}
+             */
+            setImage(src) {
+                this.image = src;
+                return this;
+            }
+
+            /**
+             * Get the total number of FZPView layer id's
+             * @return {Number}
+             */
+            totalLayerId() {
+                return this.layerIds.length;
+            }
+
+            /**
+             * Add a layer id to the FZPView
+             * @param {String} name The layer name
+             * @return {FZPView}
+             */
+            setLayerId(name) {
+                if (!this.existLayerId(name)) {
+                    this.layerIds.push(name);
+                }
+                return this;
+            }
+
+            /**
+             * Check if a layer id exist at the FZPView layerIds array
+             * @param {String} id
+             * @return {Boolean}
+             */
+            existLayerId(id) {
+                for (let i = 0; i < this.layerIds.length; i++) {
+                    if (this.layerIds[i] === id) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            /**
+             * Set the svg data
+             * @param {String} data The SVG data
+             * @return {FZPView}
+             */
+            setSVG(data) {
+                this.svg = data;
+                return this;
+            }
+
+            /**
+             * load the svg of the image path from the fritzing-parts api
+             * @param {String} baseurl the url to the fritzing-parts/core directory
+             * @return {Promise}
+             */
+            loadSVG(baseurl) {
+                let self = this;
+                return axios.get(baseurl + this.image, {
+                        responseType: 'xml'
+                    })
+                    .then((res) => {
+                        self.setSVG(res.data);
+                        console.log(res.data);
+                        return res.data;
+
+                    });
+            }
+        }
+        /**
+         * FZPConnector class
+         *
+         * @example
+         * const {FZPConnector} = require('fzp-js')
+         *
+         * let connector = new FZPConnector({id: 'sample-id', name: 'sample-name'})
+         * connector.type = 'sample-type'
+         * connector.description = 'sample-description'
+         * connector.views.breadboard.setLayer('sample-b-layer')
+         * connector.views.breadboard.setSvgId('sample-b-svg')
+         * connector.views.breadboard.setLegId('sample-b-leg')
+         * connector.views.breadboard.setTerminalId('sample-b-terminal')
+         */
+        class FZPConnector {
+            /**
+             * FZPConnector constructor
+             * @param {Object} opt - the options
+             */
+            constructor(opt = {
+                views: {
+                    pcb: {}
+                }
+            }) {
+                /**
+                 * The id of the FZP connector.
+                 * @type {String}
+                 */
+                this.id = opt.id || null;
+
+                /**
+                 * The name of the FZP connector.
+                 * @type {String}
+                 */
+                this.name = opt.name || null;
+
+                /**
+                 * The type of the FZP connector
+                 * @type {String}
+                 */
+                this.type = opt.type || null;
+
+                /**
+                 * The description of the FZP connector
+                 * @type {String}
+                 */
+                this.description = opt.description || null;
+
+                /**
+                 * The FZP connector views for breadboard, schematic and pcb.
+                 * Note that the pcb view has an object for copper0, copper1 etc.
+                 */
+                this.views = {
+                    breadboard: new FZPConnectorView(opt.views.breadboard),
+                    schematic: new FZPConnectorView(opt.views.schematic),
+                    pcb: {
+                        copper0: new FZPConnectorView(opt.views.pcb.copper0),
+                        copper1: new FZPConnectorView(opt.views.pcb.copper1),
+                    },
+                };
+            }
+        }
+        /**
+         * FZPConnectorView class
+         *
+         * @example
+         * const {FZPConnectorView} = require('fzp-js')
+         *
+         * let connectorView = new FZPConnectorView({layer: 'sample', svgId: 'sample.svg'})
+         * connectorView.legId = 'sample-leg'
+         * connectorView.terminalId = 'sample-terminal'
+         */
+        class FZPConnectorView {
+            /**
+             * FZPConnectorView constructor
+             * @param {Object} opt
+             */
+            constructor(opt = {}) {
+                /**
+                 * the FZP connector view layer
+                 * @type {String}
+                 */
+                this.layer = opt.layer || null;
+
+                /**
+                 * the FZP connector view svg
+                 * @type {String}
+                 */
+                this.svgId = opt.svgId || null;
+
+                /**
+                 * the FZP connector view leg
+                 * @type {String}
+                 */
+                this.legId = opt.legId || null;
+
+                /**
+                 * the FZP connector view terminal
+                 * @type {String}
+                 */
+                this.terminalId = opt.terminalId || null;
+            }
+
+            /**
+             * @param {String} l
+             */
+            setLayer(l) {
+                this.layer = l;
+            }
+
+            /**
+             * @return {String}
+             */
+            getLayer() {
+                return this.layer;
+            }
+
+            /**
+             * @param {String} id
+             */
+            setSvgId(id) {
+                this.svgId = id;
+            }
+
+            /**
+             * @return {String}
+             */
+            getSvgId() {
+                return this.svgId;
+            }
+
+            /**
+             * @param {String} leg
+             */
+            setLegId(leg) {
+                this.legId = leg;
+            }
+
+            /**
+             * @return {String}
+             */
+            getLegId() {
+                return this.legId;
+            }
+
+            /**
+             * @param {String} term
+             */
+            setTerminalId(term) {
+                this.terminalId = term;
+            }
+
+            /**
+             * @return {String}
+             */
+            getTerminalId() {
+                return this.terminalId;
+            }
+        }
+        /**
+         * FZPProperty class
+         *
+         * @example
+         * const {FZPProperty} = require('fzp-js')
+         *
+         * let property = new FZPProperty()
+         */
+        class FZPProperty {
+            /**
+             * FZPProperty constructor
+             */
+            constructor() {
+                /**
+                 * the property value
+                 * @type {String}
+                 */
+                this.value = null;
+
+                /**
+                 * the property showInLabel
+                 * @type {Boolean}
+                 */
+                this.showInLabel = false;
+            }
+
+            /**
+             * @param {Object|String} v
+             * @param {Boolean} s
+             */
+            set(v = null, s = false) {
+                    // let tmp = {value: v, showInLabel: s};
+                    if (v) {
+                        switch (typeof v) {
+                            case 'object':
+                                this.setValue(v.value);
+                                this.setShowInLabel(v.showInLabel);
+                                break;
+                            case 'string':
+                                this.setValue(v);
+                                break;
+                            default:
+                                throw new Error(`FZPProperty type('${typeof v}') not supported`);
+                        }
+                    }
+                    if (s) {
+                        this.setShowInLabel(s);
+                    }
+                }
+                /**
+                 * Set the FZProperty  value
+                 * @param {String} val
+                 */
+            setValue(val) {
+                this.value = val;
+            }
+
+            /**
+             * Get the FZProperty  value
+             * @return {String}
+             */
+            getValue() {
+                return this.value;
+            }
+
+            /**
+             * Set the FZProperty showInLabel boolean
+             * @param {Boolean} l
+             */
+            setShowInLabel(l) {
+                this.showInLabel = l || false;
+            }
+
+            /**
+             * Get the FZProperty showInLabel boolean
+             * @return {Boolean}
+             */
+            getShowInLabel() {
+                return this.showInLabel;
+            }
+        }
 
         function parseFZP(data) {
             //return new Promise(function (resolve, reject) {
             let fzp = new FZP();
-            
+
             if (data) {
                 var options = {
                     ignoreAttributes: false,
                     ignoreNameSpace: false,
                     attributeNamePrefix: "",
+                    textNodeName: "_",
 
                 };
                 var xml = parser.parse(data, options);
@@ -296,82 +662,82 @@
                     if (err) {
                         return reject(err);
                     } */
-                if (xml){
+                if (xml) {
                     console.log(xml);
                     console.log(xml.module.tags);
                     fzp.moduleId = xml.module.moduleId;
                     fzp.fritzingVersion = xml.module.fritzingVersion;
-                    if (xml.module.version) fzp.version = xml.module.version[0];
-                    if (xml.module.title) fzp.title = xml.module.title[0];
-                    if (xml.module.description) fzp.description = xml.module.description[0];
-                    if (xml.module.author) fzp.author = xml.module.author[0];
-                    if (xml.module.date) fzp.date = xml.module.date[0];
-                    if (xml.module.url) fzp.url = xml.module.url[0];
-                    if (xml.module.label) fzp.label = xml.module.label[0];
+                    if (xml.module.version) fzp.version = xml.module.version;
+                    if (xml.module.title) fzp.title = xml.module.title;
+                    if (xml.module.description) fzp.description = xml.module.description;
+                    if (xml.module.author) fzp.author = xml.module.author;
+                    if (xml.module.date) fzp.date = xml.module.date;
+                    if (xml.module.url) fzp.url = xml.module.url;
+                    if (xml.module.label) fzp.label = xml.module.label;
                     if (xml.module.tags) fzp.tags = xml.module.tags.tag[0];
                     if (xml.module.taxonomy) fzp.taxonomy = xml.module.taxonomy;
                     if (xml.module.language) fzp.language = xml.module.language;
                     if (xml.module.family) fzp.family = xml.module.family;
                     if (xml.module.variant) fzp.variant = xml.module.variant;
                     if (xml.module.properties) {
-                        fzp.properties = parseProperties(xml.module.properties[0].property);
+                        fzp.properties = parseProperties(xml.module.properties.property);
                     }
 
                     if (xml.module.views) {
-                        if (xml.module.views[0].iconView) {
-                            const iconViewLayer = xml.module.views[0].iconView[0].layers[0];
-                            fzp.views.icon.setImage(iconViewLayer.$.image);
-                            fzp.views.icon.setLayerId(iconViewLayer.layer[0].$.layerId);
+                        if (xml.module.views.iconView) {
+                            const iconViewLayer = xml.module.views.iconView.layers;
+                            fzp.views.icon.setImage(iconViewLayer.image);
+                            fzp.views.icon.setLayerId(iconViewLayer.layer.layerId);
                         }
-                        if (xml.module.views[0].breadboardView) {
-                            const breadboardLayer = xml.module.views[0].breadboardView[0].layers[0];
-                            fzp.views.breadboard.setImage(breadboardLayer.$.image);
-                            fzp.views.breadboard.setLayerId(breadboardLayer.layer[0].$.layerId);
+                        if (xml.module.views.breadboardView) {
+                            const breadboardLayer = xml.module.views.breadboardView.layers;
+                            fzp.views.breadboard.setImage(breadboardLayer.image);
+                            fzp.views.breadboard.setLayerId(breadboardLayer.layer.layerId);
                         }
-                        if (xml.module.views[0].pcbView) {
-                            const pcbViewLayer = xml.module.views[0].pcbView[0].layers[0];
-                            fzp.views.pcb.setImage(pcbViewLayer.$.image);
+                        if (xml.module.views.pcbView) {
+                            const pcbViewLayer = xml.module.views.pcbView.layers;
+                            fzp.views.pcb.setImage(pcbViewLayer.image);
                             for (let iLayer = 0; iLayer < pcbViewLayer.layer.length; iLayer++) {
-                                fzp.views.pcb.setLayerId(pcbViewLayer.layer[iLayer].$.layerId);
+                                fzp.views.pcb.setLayerId(pcbViewLayer.layer[iLayer].layerId);
                             }
                         }
-                        if (xml.module.views[0].schematicView) {
-                            const schematicViewLayer = xml.module.views[0].schematicView[0].layers[0];
-                            fzp.views.schematic.setImage(schematicViewLayer.$.image);
-                            fzp.views.schematic.setLayerId(schematicViewLayer.layer[0].$.layerId);
+                        if (xml.module.views.schematicView) {
+                            const schematicViewLayer = xml.module.views.schematicView.layers;
+                            fzp.views.schematic.setImage(schematicViewLayer.image);
+                            fzp.views.schematic.setLayerId(schematicViewLayer.layer.layerId);
                         }
                     }
 
                     if (xml.module.connectors) {
-                        if (xml.module.connectors[0].connector) {
-                            for (let i = 0; i < xml.module.connectors[0].connector.length; i++) {
-                                const connector = xml.module.connectors[0].connector[i];
+                        if (xml.module.connectors.connector) {
+                            for (let i = 0; i < xml.module.connectors.connector.length; i++) {
+                                const connector = xml.module.connectors.connector[i];
 
                                 // create the connector for the three views.
                                 let c = new FZPConnector();
-                                c.id = connector.$.id;
-                                c.name = connector.$.name;
-                                c.type = connector.$.type;
+                                c.id = connector.id;
+                                c.name = connector.name;
+                                c.type = connector.type;
                                 if (connector.description) {
-                                    c.description = connector.description[0];
+                                    c.description = connector.description;
                                 }
 
-                                if (connector.views[0].breadboardView) {
-                                    c.views.breadboard = parseConnectorView(connector.views[0].breadboardView[0].p[0]);
+                                if (connector.views.breadboardView) {
+                                    c.views.breadboard = parseConnectorView(connector.views.breadboardView.p);
                                 }
 
-                                if (connector.views[0].schematicView) {
-                                    c.views.schematic = parseConnectorView(connector.views[0].schematicView[0].p[0]);
+                                if (connector.views.schematicView) {
+                                    c.views.schematic = parseConnectorView(connector.views.schematicView.p);
                                 }
 
-                                if (connector.views[0].pcbView) {
-                                    for (let iPcb = 0; iPcb < connector.views[0].pcbView[0].p.length; iPcb++) {
-                                        switch (connector.views[0].pcbView[0].p[iPcb].$.layer) {
+                                if (connector.views.pcbView) {
+                                    for (let iPcb = 0; iPcb < connector.views.pcbView.p.length; iPcb++) {
+                                        switch (connector.views.pcbView.p[iPcb].layer) {
                                             case 'copper0':
-                                                c.views.pcb.copper0 = parseConnectorView(connector.views[0].pcbView[0].p[iPcb]);
+                                                c.views.pcb.copper0 = parseConnectorView(connector.views.pcbView.p[iPcb]);
                                                 break;
                                             case 'copper1':
-                                                c.views.pcb.copper1 = parseConnectorView(connector.views[0].pcbView[0].p[iPcb]);
+                                                c.views.pcb.copper1 = parseConnectorView(connector.views.pcbView.p[iPcb]);
                                                 break;
                                         }
                                     }
@@ -382,16 +748,52 @@
                         }
                     }
 
-                    return resolve(fzp);
+                    //let url = 'https://fritzing.github.io/fritzing-parts';
+                    //return fzp.loadSVGs(`${url}/svg/core/`).then(() => {
+                    return fzp;
+                    console.log(fzp);
+                    //  });
                 }
             }
             //});
         }
+        /**
+         * Get the parsed xml object and map to a proper structure
+         * @param {String} xml
+         * @return {Object}
+         */
+        function parseProperties(xml) {
+            let data = {};
+            // if (xml) {
+            //   if (xml.length > 0) {
+            for (let i = 0; i < xml.length; i++) {
+                data[xml[i].name] = {
+                    value: xml[i]._,
+                    showInLabel: xml[i].name,
+                };
+            }
+            //   }
+            // }
+            return data;
+        }
+
+        /**
+         * @param {Object} xml
+         * @return {FZPConnectorView}
+         */
+        function parseConnectorView(xml) {
+            let conView = new FZPConnectorView();
+            conView.layer = xml.layer || null;
+            conView.svgId = xml.svgId || null;
+            conView.legId = xml.legId || null;
+            conView.terminalId = xml.terminalId || null;
+            return conView;
+        }
     </script>
     <script>
-        document.getElementById('inputfile').addEventListener('change', function () {
+        document.getElementById('inputfile').addEventListener('change', function() {
             var array = new FileReader();
-            array.onload = function () {
+            array.onload = function() {
                 var data = array.result;
                 console.log(data)
                 readFZZ(null, data, (fzz) => {
@@ -437,11 +839,11 @@
 
                                     //         //   // }
                                 });
-                            //
-                                 break;
-                            //
+                                //
+                                break;
+                                //
                             case 'fzp':
-                                zip.file(filename).async('string').then(function success(text){
+                                zip.file(filename).async('string').then(function success(text) {
                                     var data = parseFZP(text);
                                     console.log(data);
                                 });
@@ -451,6 +853,13 @@
                             case 'svg':
                                 // TODO: loadsvg
                                 console.log('SVG', filename);
+                                var svG = [];
+                                zip.file(filename).async('string').then(function success(text) {
+                                    svG.push(text);
+
+                                });
+                                console.log("Svg", svG);
+
                                 break;
 
                             case 'ino':
@@ -477,6 +886,7 @@
             });
         }
     </script>
-       
-  </body>
+
+</body>
+
 </html>
